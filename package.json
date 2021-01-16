@@ -1,0 +1,23 @@
+{
+  "name": "letterbox",
+  "version": "0.0.1",
+  "description": "An example project for NextAuth.js",
+  "repository": "https://github.com/GriffinSauce/letterbox.git",
+  "homepage": "",
+  "main": "",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "author": "Joris Griffioen (https://joris.rocks)",
+  "license": "MIT",
+  "dependencies": {
+    "googleapis": "^67.0.0",
+    "next": "^10.0.5",
+    "next-auth": "^3.1.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "sqlite3": "^4.2.0"
+  }
+}
