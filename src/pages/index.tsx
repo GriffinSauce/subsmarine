@@ -1,11 +1,12 @@
 import Link from 'next/link';
+import { NextPage } from 'next';
 import { signIn, useSession } from 'next-auth/client';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
 
 const GOOGLE_PROVIDER_ID = 'google';
 
-const Page = () => {
+const Page: NextPage = () => {
   const [session, loading] = useSession();
 
   return (

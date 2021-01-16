@@ -19,6 +19,7 @@
   "dependencies": {
     "@robit-dev/tailwindcss-class-combiner": "^1.0.2",
     "@testing-library/dom": "^7.29.4",
+    "@types/dompurify": "^2.2.1",
     "@types/jest-axe": "^3.5.1",
     "base64url": "^3.0.1",
     "dompurify": "^2.2.6",

@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/client';
-import Container from './Container';
-import styles from './Header.module.css';
+import Container from 'components/Container';
+import styles from 'components/Header.module.css';
 
 const GOOGLE_PROVIDER_ID = 'google';
 
-const Header = () => {
+const Header: React.FC = () => {
   const [session, loading] = useSession();
 
   return (

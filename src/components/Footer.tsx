@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import styles from './Footer.module.css';
-import Container from './Container';
+import styles from 'components/Footer.module.css';
+import Container from 'components/Container';
 import { version } from '../../package.json';
 
-const Footer = () => {
+const Footer: React.FC = () => {
   return (
     <footer className={styles.footer}>
       <hr />

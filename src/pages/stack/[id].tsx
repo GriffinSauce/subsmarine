@@ -1,17 +1,21 @@
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
 import MessageBody from 'components/MessageBody';
 import { getSubject } from 'utils/message';
-
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+import fetcher from 'utils/fetcher';
+import { ResponseData } from 'pages/api/email/messages/[id]';
 
 const PageContent = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data, error } = useSWR(`/api/email/messages/${id}`, fetcher);
+  const { data, error } = useSWR<ResponseData>(
+    `/api/email/messages/${id}`,
+    fetcher,
+  );
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
 
@@ -24,7 +28,7 @@ const PageContent = () => {
   );
 };
 
-const Page = () => {
+const Page: NextPage = () => {
   return (
     <Layout>
       <Container>

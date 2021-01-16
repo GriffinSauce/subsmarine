@@ -1,6 +1,8 @@
 import NextAuth from 'next-auth';
 import Providers from 'next-auth/providers';
-import querystring from 'querystring';
+import refreshAccessToken from 'utils/refreshAccessToken';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { Token } from 'types/auth';
 
 const scopes = [
   'https://www.googleapis.com/auth/userinfo.profile',
@@ -31,7 +33,7 @@ const options = {
   // Notes:
   // * You must to install an appropriate node_module for your database
   // * The Email provider requires a database (OAuth providers do not)
-  database: process.env.DATABASE_URL,
+  // database: process.env.DATABASE_URL,
 
   // The secret should be set to a reasonably long random string.
   // It is used to sign cookies and to sign and encrypt JSON Web Tokens, unless
@@ -90,16 +92,22 @@ const options = {
       return token;
     },
 
-    jwt: async (prevToken, account, profile) => {
+    jwt: async (prevToken: Token, account, profile): Promise<Token> => {
       // Signing in
       if (account && profile) {
+        const {
+          accessToken,
+          accessTokenExpires,
+          refreshToken,
+          ...restProfile
+        } = profile;
         return {
-          accessToken: account.accessToken,
-          accessTokenExpires: account.accessTokenExpires,
-          refreshToken: account.refreshToken,
+          accessToken,
+          accessTokenExpires,
+          refreshToken: refreshToken || prevToken.refreshToken,
           user: {
+            ...restProfile,
             ...account,
-            ...profile,
           },
         };
       }
@@ -107,7 +115,7 @@ const options = {
       // Subsequent use of JWT, the user has been logged in before
       // access token has not expired yet
 
-      // TODO: this will currently always refresh due to accessTokenExpires being null
+      // TODO: this will currently always refresh the first time due to accessTokenExpires being null
       // https://github.com/nextauthjs/next-auth/issues/1079
       if (Date.now() < prevToken.accessTokenExpires) {
         return prevToken;
@@ -125,52 +133,5 @@ const options = {
   debug: false,
 };
 
-/**
- * Takes a token, and returns a new token with updated
- * `accessToken` and `accessTokenExpires`. If an error occurs,
- * returns the old token and an error property
- */
-const refreshAccessToken = async (token) => {
-  try {
-    const url = `https://oauth2.googleapis.com/token?${querystring.stringify({
-      client_id: process.env.GOOGLE_ID,
-      client_secret: process.env.GOOGLE_SECRET,
-      grant_type: 'refresh_token',
-      refresh_token: token.user.refreshToken,
-    })}`;
-
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'POST',
-    });
-
-    const refreshToken = await response.json();
-
-    if (!response.ok) {
-      throw refreshToken;
-    }
-
-    // Give a 10 sec buffer
-    const now = new Date();
-    const accessTokenExpires = now.setSeconds(
-      now.getSeconds() + refreshToken.expires_in - 10,
-    );
-
-    return {
-      ...token,
-      accessToken: refreshToken.access_token,
-      accessTokenExpires,
-      refreshToken: refreshToken.refresh_token,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      ...token,
-      error: 'RefreshAccessTokenError',
-    };
-  }
-};
-
-export default (req, res) => NextAuth(req, res, options);
+export default (req: NextApiRequest, res: NextApiResponse): void =>
+  NextAuth(req, res, options);

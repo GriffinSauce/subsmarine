@@ -1,10 +1,19 @@
 import { getSession } from 'next-auth/client';
-import { google } from 'googleapis';
+import { google, gmail_v1 } from 'googleapis';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async (req, res) => {
+export interface ResponseData {
+  message: gmail_v1.Schema$Message;
+}
+
+export default async (
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseData>,
+): Promise<void> => {
   const session = await getSession({ req });
   if (!session) {
-    return res.status(403).json({ error: 'Not authenticated' });
+    res.status(403).json({ error: 'Not authenticated' });
+    return;
   }
 
   const oauth2Client = new google.auth.OAuth2(
@@ -22,11 +31,11 @@ export default async (req, res) => {
 
   const { id } = req.query;
 
-  let message;
+  let message: gmail_v1.Schema$Message;
   try {
     const response = await gmail.users.messages.get({
       userId: 'me',
-      id,
+      id: `${id}`,
       format: 'FULL',
     });
     message = response.data;

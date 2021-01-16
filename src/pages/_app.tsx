@@ -1,12 +1,13 @@
 import 'tailwindcss/tailwind.css';
 import 'styles/global.css';
+import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { ThemeProvider } from 'next-themes';
 import { Provider as AuthProvider } from 'next-auth/client';
 
 // Use the <Provider> to improve performance and allow components that call
 // `useSession()` anywhere in your application to access the `session` object.
-const App = ({ Component, pageProps }) => {
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <AuthProvider
       // Provider options are not required but can be useful in situations where

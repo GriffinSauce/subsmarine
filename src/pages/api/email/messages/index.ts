@@ -1,10 +1,19 @@
 import { getSession } from 'next-auth/client';
-import { google } from 'googleapis';
+import { google, gmail_v1 } from 'googleapis';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async (req, res) => {
+export interface ResponseData {
+  messages: gmail_v1.Schema$Message[];
+}
+
+export default async (
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseData>,
+): Promise<void> => {
   const session = await getSession({ req });
   if (!session) {
-    return res.status(403).json({ error: 'Not authenticated' });
+    res.status(403).json({ error: 'Not authenticated' });
+    return;
   }
 
   const oauth2Client = new google.auth.OAuth2(
@@ -21,7 +30,7 @@ export default async (req, res) => {
   });
 
   // Get newsletter label
-  let labels;
+  let labels: gmail_v1.Schema$Label[];
   try {
     const { data } = await gmail.users.labels.list({
       userId: 'me',
@@ -29,19 +38,19 @@ export default async (req, res) => {
     labels = data.labels;
   } catch (err) {
     console.error('err', err);
-    throw new Error('The API returned an error fetching labels: ' + err);
+    throw new Error(`The API returned an error fetching labels: ${err}`);
   }
   if (!labels.length) {
     throw new Error('No labels found.');
   }
   const newsletterLabel = labels.find((label) => label.name === 'Newsletters');
 
-  // Get messages with label
-  let messages;
+  // Get messages by label
+  let messages: gmail_v1.Schema$Message[];
   try {
     const { data } = await gmail.users.messages.list({
       userId: 'me',
-      labelIds: newsletterLabel.id,
+      labelIds: [newsletterLabel.id],
     });
     messages = data.messages;
     // data.nextPageToken
@@ -52,9 +61,9 @@ export default async (req, res) => {
   }
 
   // Add headers to messages
-  const fullMessages = await Promise.all(
+  const fullMessages: gmail_v1.Schema$Message[] = await Promise.all(
     messages.map(async (message) => {
-      let data;
+      let data: gmail_v1.Schema$Message;
       try {
         const response = await gmail.users.messages.get({
           userId: 'me',
