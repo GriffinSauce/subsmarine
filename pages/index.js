@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/client";
-import Layout from "../components/layout";
+import Layout from "../components/Layout";
 
 const GOOGLE_PROVIDER_ID = "google";
 

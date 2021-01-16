@@ -1,7 +1,5 @@
 import Link from "next/link";
-
-const getSubject = (message) =>
-  message.payload.headers.find((header) => header.name === "Subject").value;
+import { getSubject } from "../utils/message";
 
 const MessageListItem = ({ message }) => {
   return (

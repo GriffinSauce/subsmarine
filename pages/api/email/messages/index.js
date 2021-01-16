@@ -67,9 +67,6 @@ export default async (req, res) => {
           `Error fetching message ${message.id} - ${err.message}`
         );
       }
-      const subjectHeader = data.payload.headers.find(
-        (header) => header.name === "Subject"
-      );
       return data;
     })
   );

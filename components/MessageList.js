@@ -8,9 +8,10 @@ const MessageList = () => {
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
 
+  const { messages } = data;
   return (
     <ul>
-      {data.messages.map((message) => (
+      {messages.map((message) => (
         <li>
           <MessageListItem message={message} />
         </li>

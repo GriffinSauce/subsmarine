@@ -87,8 +87,6 @@ const options = {
     // redirect: async (url, baseUrl) => { return Promise.resolve(baseUrl) },
 
     session: async (_, token) => {
-      console.log("token", token);
-      console.log("_", _);
       return token;
     },
 
