@@ -12,6 +12,7 @@ export default async (
 ): Promise<void> => {
   const session = await getSession({ req });
   if (!session) {
+    // @ts-expect-error - TODO: find typing that works with swr
     res.status(403).json({ error: 'Not authenticated' });
     return;
   }
