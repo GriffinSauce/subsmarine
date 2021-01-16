@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import Layout from "../../components/Layout";
-import Message from "../../components/Message";
+import MessageBody from "../../components/MessageBody";
+import { getSubject } from "../utils/message";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
@@ -14,7 +15,12 @@ const PageContent = () => {
   if (!data) return <div>loading...</div>;
 
   const { message } = data;
-  return <Message message={message} />;
+  return (
+    <>
+      <h2>{getSubject(message)}</h2>
+      <MessageBody message={message} />
+    </>
+  );
 };
 
 export default function Page() {
