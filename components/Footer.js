@@ -1,8 +1,8 @@
 import Link from "next/link";
-import styles from "./footer.module.css";
+import styles from "./Footer.module.css";
 import { version } from "../package.json";
 
-export default function Footer() {
+const Footer = () => {
   return (
     <footer className={styles.footer}>
       <hr />
@@ -21,4 +21,6 @@ export default function Footer() {
       </ul>
     </footer>
   );
-}
+};
+
+export default Footer;

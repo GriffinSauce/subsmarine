@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/client";
-import styles from "./header.module.css";
+import styles from "./Header.module.css";
 
-// The approach used in this component shows how to built a sign in and sign out
-// component that works on pages which support both client and server side
-// rendering, and avoids any flash incorrect content on initial page load.
-export default function Header() {
+const GOOGLE_PROVIDER_ID = "google";
+
+const Header = () => {
   const [session, loading] = useSession();
 
   return (
@@ -25,11 +24,11 @@ export default function Header() {
                 You are not signed in
               </span>
               <a
-                href={`/api/auth/signin`}
+                href={`/api/auth/signin/Google`}
                 className={styles.buttonPrimary}
                 onClick={(e) => {
                   e.preventDefault();
-                  signIn();
+                  signIn(GOOGLE_PROVIDER_ID);
                 }}
               >
                 Sign in
@@ -71,27 +70,14 @@ export default function Header() {
             </Link>
           </li>
           <li className={styles.navItem}>
-            <Link href="/client">
-              <a>Client</a>
-            </Link>
-          </li>
-          <li className={styles.navItem}>
-            <Link href="/server">
-              <a>Server</a>
-            </Link>
-          </li>
-          <li className={styles.navItem}>
-            <Link href="/protected">
-              <a>Protected</a>
-            </Link>
-          </li>
-          <li className={styles.navItem}>
-            <Link href="/api-example">
-              <a>API</a>
+            <Link href="/stack">
+              <a>Stack</a>
             </Link>
           </li>
         </ul>
       </nav>
     </header>
   );
-}
+};
+
+export default Header;

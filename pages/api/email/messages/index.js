@@ -1,4 +1,3 @@
-// This is an example of how to access a session from an API route
 import { getSession } from "next-auth/client";
 const { google } = require("googleapis");
 
@@ -10,8 +9,7 @@ export default async (req, res) => {
 
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_ID,
-    process.env.GOOGLE_SECRET,
-    ""
+    process.env.GOOGLE_SECRET
   );
   oauth2Client.setCredentials({
     access_token: session.accessToken,
@@ -72,10 +70,9 @@ export default async (req, res) => {
       const subjectHeader = data.payload.headers.find(
         (header) => header.name === "Subject"
       );
-      console.log(subjectHeader.value);
       return data;
     })
   );
 
-  res.send(JSON.stringify(fullMessages, null, 2));
+  res.json({ messages: fullMessages });
 };

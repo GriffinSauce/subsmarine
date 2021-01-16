@@ -93,8 +93,6 @@ const options = {
     },
 
     jwt: async (prevToken, account, profile) => {
-      console.log("profile", profile);
-      console.log("account", account);
       // Signing in
       if (account && profile) {
         return {
