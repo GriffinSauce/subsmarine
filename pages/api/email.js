@@ -4,7 +4,9 @@ const { google } = require("googleapis");
 
 export default async (req, res) => {
   const session = await getSession({ req });
-  console.log("session", session);
+  if (!session) {
+    return res.status(403).json({ error: "Not authenticated" });
+  }
 
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_ID,
@@ -12,30 +14,68 @@ export default async (req, res) => {
     ""
   );
   oauth2Client.setCredentials({
-    access_token: session.user.accessToken,
+    access_token: session.accessToken,
   });
 
   const gmail = google.gmail({
     version: "v1",
     auth: oauth2Client,
   });
-  gmail.users.labels.list(
-    {
+
+  // Get newsletter label
+  let labels;
+  try {
+    const { data } = await gmail.users.labels.list({
       userId: "me",
-    },
-    (err, res) => {
-      if (err) return console.log("The API returned an error: " + err);
-      const labels = res.data.labels;
-      if (labels.length) {
-        console.log("Labels:");
-        labels.forEach((label) => {
-          console.log(`- ${label.name}`);
+    });
+    labels = data.labels;
+  } catch (err) {
+    console.error("err", err);
+    throw new Error("The API returned an error fetching labels: " + err);
+  }
+  if (!labels.length) {
+    throw new Error("No labels found.");
+  }
+  const newsletterLabel = labels.find((label) => label.name === "Newsletters");
+
+  // Get messages with label
+  let messages;
+  try {
+    const { data } = await gmail.users.messages.list({
+      userId: "me",
+      labelIds: newsletterLabel.id,
+    });
+    messages = data.messages;
+    // data.nextPageToken
+    // data.resultSizeEstimate
+  } catch (err) {
+    console.error("err", err);
+    throw new Error("No messages found.");
+  }
+
+  // Add headers to messages
+  const fullMessages = await Promise.all(
+    messages.map(async (message) => {
+      let data;
+      try {
+        const response = await gmail.users.messages.get({
+          userId: "me",
+          id: message.id,
+          format: "METADATA",
         });
-      } else {
-        console.log("No labels found.");
+        data = response.data;
+      } catch (err) {
+        throw new Error(
+          `Error fetching message ${message.id} - ${err.message}`
+        );
       }
-    }
+      const subjectHeader = data.payload.headers.find(
+        (header) => header.name === "Subject"
+      );
+      console.log(subjectHeader.value);
+      return data;
+    })
   );
 
-  res.send(JSON.stringify(session, null, 2));
+  res.send(JSON.stringify(fullMessages, null, 2));
 };
