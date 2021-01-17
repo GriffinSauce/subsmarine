@@ -1,7 +1,6 @@
-import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/client';
 import Container from 'components/Container';
-import styles from 'components/Header.module.css';
+import Nav from 'components/Nav';
 
 const GOOGLE_PROVIDER_ID = 'google';
 
@@ -10,24 +9,20 @@ const Header: React.FC = () => {
 
   return (
     <header>
-      <noscript>
-        <style>{`.nojs-show { opacity: 1; top: 0; }`}</style>
-      </noscript>
       <Container>
-        <div className={styles.signedInStatus}>
+        {/* Set min-height to avoid page reflow while session loading */}
+        <div className="min-h-10">
           <p
-            className={`nojs-show ${
-              !session && loading ? styles.loading : styles.loaded
+            className={`flex flex-row items-center justify-between w-full p-3 transition-all transform bg-gray-200 rounded-b-xl ${
+              !session && loading ? '-translate-y-12 opacity-0' : ''
             }`}
           >
             {!session && (
               <>
-                <span className={styles.notSignedInText}>
-                  You are not signed in
-                </span>
+                <span>You are not signed in</span>
                 <a
                   href="/api/auth/signin/Google"
-                  className={styles.buttonPrimary}
+                  className="button-blue"
                   onClick={(e) => {
                     e.preventDefault();
                     signIn(GOOGLE_PROVIDER_ID);
@@ -39,20 +34,22 @@ const Header: React.FC = () => {
             )}
             {session && (
               <>
-                {session.user.image && (
-                  <span
-                    style={{ backgroundImage: `url(${session.user.image})` }}
-                    className={styles.avatar}
-                  />
-                )}
-                <span className={styles.signedInText}>
-                  <small>Signed in as</small>
-                  <br />
-                  <strong>{session.user.email || session.user.name}</strong>
-                </span>
+                <div className="flex items-center space-x-3 leading-none">
+                  {session.user.image && (
+                    <span
+                      style={{ backgroundImage: `url(${session.user.image})` }}
+                      className="w-10 h-10 bg-white bg-cover rounded-full"
+                    />
+                  )}
+                  <div>
+                    <small>Signed in as</small>
+                    <br />
+                    <strong>{session.user.name}</strong>
+                  </div>
+                </div>
                 <a
                   href="/api/auth/signout"
-                  className={styles.button}
+                  className="button-gray"
                   onClick={(e) => {
                     e.preventDefault();
                     signOut();
@@ -64,20 +61,7 @@ const Header: React.FC = () => {
             )}
           </p>
         </div>
-        <nav>
-          <ul className={styles.navItems}>
-            <li className={styles.navItem}>
-              <Link href="/">
-                <a>Home</a>
-              </Link>
-            </li>
-            <li className={styles.navItem}>
-              <Link href="/stack">
-                <a>Stack</a>
-              </Link>
-            </li>
-          </ul>
-        </nav>
+        <Nav />
       </Container>
     </header>
   );

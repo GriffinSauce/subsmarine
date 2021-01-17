@@ -1,25 +1,22 @@
 import Link from 'next/link';
-import styles from 'components/Footer.module.css';
 import Container from 'components/Container';
 import { version } from '../../package.json';
 
 const Footer: React.FC = () => {
   return (
-    <footer className={styles.footer}>
+    <footer className="mt-6">
       <hr />
       <Container>
-        <ul className={styles.navItems}>
-          <li className={styles.navItem}>
+        <ul className="py-3 space-x-3">
+          <li className="inline-block text-blue-700">
             <a href="https://github.com/GriffinSauce/letterbox">GitHub</a>
           </li>
-          <li className={styles.navItem}>
+          <li className="inline-block text-blue-700">
             <Link href="/policy">
               <a>Policy</a>
             </Link>
           </li>
-          <li className={styles.navItem}>
-            <em>{version}</em>
-          </li>
+          <li className="inline-block italic text-blue-700">v{version}</li>
         </ul>
       </Container>
     </footer>
