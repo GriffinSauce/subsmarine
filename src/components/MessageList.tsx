@@ -1,12 +1,13 @@
-import useSWR from 'swr';
 import MessageListItem from 'components/MessageListItem';
-import fetcher from 'utils/fetcher';
-import { ResponseData } from 'pages/api/email/messages';
+import { useQuery } from 'react-query';
+import { fetchMessages } from 'api';
 
 const MessageList: React.FC = () => {
-  const { data, error } = useSWR<ResponseData>('/api/email/messages', fetcher);
-  if (error) return <div>failed to load</div>;
-  if (!data) return <div>loading...</div>;
+  const { isLoading, isError, data } = useQuery('messages', fetchMessages);
+
+  if (isLoading) return <div>loading...</div>;
+
+  if (isError) return <div>failed to load</div>;
 
   const { messages } = data;
   return (

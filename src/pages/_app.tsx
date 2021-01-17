@@ -1,9 +1,24 @@
 import 'tailwindcss/tailwind.css';
 import 'styles/global.css';
 import { AppProps } from 'next/app';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { persistWithLocalStorage } from 'react-query/persist-localstorage-experimental';
 import Head from 'next/head';
 import { ThemeProvider } from 'next-themes';
 import { Provider as AuthProvider } from 'next-auth/client';
+
+const DAY_MS = 1000 * 60 * 60 * 24; // 24 hours
+const WEEK_MS = DAY_MS * 7;
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: WEEK_MS,
+    },
+  },
+});
+
+persistWithLocalStorage(queryClient);
 
 // Use the <Provider> to improve performance and allow components that call
 // `useSession()` anywhere in your application to access the `session` object.
@@ -29,19 +44,21 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       }}
       session={pageProps.session}
     >
-      {/* <ThemeProvider defaultTheme="system" attribute="class"> */}
-      <ThemeProvider defaultTheme="light" attribute="class">
-        <Head>
-          <title>Letterbox</title>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0"
-          />
-        </Head>
+      <QueryClientProvider client={queryClient}>
+        {/* <ThemeProvider defaultTheme="system" attribute="class"> */}
+        <ThemeProvider defaultTheme="light" attribute="class">
+          <Head>
+            <title>Letterbox</title>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
+          </Head>
 
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <Component {...pageProps} />
-      </ThemeProvider>
+          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </QueryClientProvider>
     </AuthProvider>
   );
 };

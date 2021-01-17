@@ -1,23 +1,31 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
 import MessageBody from 'components/MessageBody';
 import { getSubject } from 'utils/message';
-import fetcher from 'utils/fetcher';
-import { ResponseData } from 'pages/api/email/messages/[id]';
+
+import { useQuery } from 'react-query';
+import { fetchMessage } from 'api';
 
 const PageContent = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data, error } = useSWR<ResponseData>(
-    id ? `/api/email/messages/${id}` : null,
-    fetcher,
+  const { isIdle, isLoading, isError, data } = useQuery(
+    ['messages', id],
+    () => fetchMessage({ id: `${id}` }),
+    {
+      enabled: !!id,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
   );
-  if (error) return <div>failed to load</div>;
-  if (!data) return <div>loading...</div>;
+
+  if (isIdle || isLoading) return <div>loading...</div>;
+
+  if (isError) return <div>failed to load</div>;
 
   const { message } = data;
   return (
