@@ -13,7 +13,7 @@ const PageContent = () => {
   const { id } = router.query;
 
   const { data, error } = useSWR<ResponseData>(
-    `/api/email/messages/${id}`,
+    id ? `/api/email/messages/${id}` : null,
     fetcher,
   );
   if (error) return <div>failed to load</div>;
