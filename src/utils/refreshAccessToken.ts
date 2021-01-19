@@ -42,7 +42,7 @@ const refreshAccessToken = async (token: Token): Promise<Token> => {
       error: null,
     };
   } catch (error) {
-    console.log(`Error refreshing accesstoken: ${error.message}`);
+    console.error(`Error refreshing accesstoken: ${error.message}`);
     return {
       ...token,
       error: 'RefreshAccessTokenError',

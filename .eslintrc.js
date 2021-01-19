@@ -47,6 +47,7 @@ module.exports = {
 
     // Un-opinionate airbnb a bit
     'arrow-body-style': 'off',
+    'no-console': 'off',
   },
   globals: {
     React: 'writable',
