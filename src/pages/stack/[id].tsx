@@ -4,17 +4,14 @@ import Layout from 'components/Layout';
 import Container from 'components/Container';
 import MessageBody from 'components/MessageBody';
 import { getSubject } from 'utils/message';
-
-import { useQuery } from 'react-query';
-import { fetchMessage } from 'api';
+import { useMessage } from 'api';
 
 const PageContent = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { isIdle, isLoading, isError, data } = useQuery(
-    ['messages', id],
-    () => fetchMessage({ id: `${id}` }),
+  const { isIdle, isLoading, isError, data } = useMessage(
+    { id: `${id}` },
     {
       enabled: !!id,
       refetchOnMount: false,

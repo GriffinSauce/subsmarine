@@ -1,9 +1,8 @@
 import MessageListItem from 'components/MessageListItem';
-import { useQuery } from 'react-query';
-import { fetchMessages } from 'api';
+import { useMessages } from 'api';
 
 const MessageList: React.FC = () => {
-  const { isLoading, isError, data } = useQuery('messages', fetchMessages);
+  const { isLoading, isError, data } = useMessages();
 
   if (isLoading) return <div>loading...</div>;
 
