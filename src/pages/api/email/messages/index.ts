@@ -1,6 +1,13 @@
 import { getSession } from 'next-auth/client';
 import { google, gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
+import Debug from 'debug';
+
+const debug = Debug('api:email:messages');
+
+google.options({
+  http2: true,
+});
 
 export interface ResponseData {
   messages: gmail_v1.Schema$Message[];
@@ -45,13 +52,16 @@ export default async (
     throw new Error('No labels found.');
   }
   const newsletterLabel = labels.find((label) => label.name === 'Newsletters');
+  debug('Fetched label', newsletterLabel);
 
   // Get messages by label
   let messages: gmail_v1.Schema$Message[];
   try {
     const { data } = await gmail.users.messages.list({
       userId: 'me',
-      labelIds: [newsletterLabel.id],
+      // labelIds is mistyped as an Array, cast to avoid opting out of the whole options type check
+      labelIds: (newsletterLabel.id as unknown) as Array<string>,
+      maxResults: 50,
     });
     messages = data.messages;
     // data.nextPageToken
@@ -60,6 +70,7 @@ export default async (
     console.error('err', err);
     throw new Error('No messages found.');
   }
+  debug('Fetched message list');
 
   // Add headers to messages
   const fullMessages: gmail_v1.Schema$Message[] = await Promise.all(
@@ -80,6 +91,7 @@ export default async (
       return data;
     }),
   );
+  debug('Fetched messages metadata');
 
   res.json({ messages: fullMessages });
 };

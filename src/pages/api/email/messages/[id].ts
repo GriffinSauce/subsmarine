@@ -1,6 +1,9 @@
 import { getSession } from 'next-auth/client';
 import { google, gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
+import Debug from 'debug';
+
+const debug = Debug('api:email:messages:id');
 
 export interface ResponseData {
   message: gmail_v1.Schema$Message;
@@ -43,6 +46,7 @@ export default async (
   } catch (err) {
     throw new Error(`Error fetching message ${id} - ${err.message}`);
   }
+  debug('Fetched message');
 
   res.json({ message });
 };
