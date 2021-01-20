@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
 import MessageBody from 'components/MessageBody';
-import { getSubject } from 'utils/message';
+import { getHeaderValue } from 'utils/message';
 import { useMessage } from 'api';
 
 const PageContent = () => {
@@ -27,7 +27,7 @@ const PageContent = () => {
   const { message } = data;
   return (
     <>
-      <h2>{getSubject(message)}</h2>
+      <h2>{getHeaderValue(message, 'Subject')}</h2>
       <MessageBody message={message} />
     </>
   );
