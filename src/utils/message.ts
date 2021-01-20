@@ -8,10 +8,11 @@ const getHeader = (
 ): gmail_v1.Schema$MessagePartHeader | undefined =>
   message.payload.headers.find((header) => header.name === name);
 
-export const getSubject = (
+export const getHeaderValue = (
   message: gmail_v1.Schema$Message,
+  name: string,
 ): string | undefined => {
-  const header = getHeader(message, 'Subject');
+  const header = getHeader(message, name);
   return header?.value;
 };
 
