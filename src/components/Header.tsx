@@ -12,7 +12,7 @@ const Header: React.FC = () => {
       <Container>
         {/* Set min-height to avoid page reflow while session loading */}
         <div className="min-h-10">
-          <p
+          <div
             className={`flex flex-row items-center justify-between w-full p-3 transition-all transform bg-gray-200 rounded-b-xl ${
               !session && loading ? '-translate-y-12 opacity-0' : ''
             }`}
@@ -59,7 +59,7 @@ const Header: React.FC = () => {
                 </a>
               </>
             )}
-          </p>
+          </div>
         </div>
         <Nav />
       </Container>
