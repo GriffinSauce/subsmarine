@@ -2,8 +2,18 @@ import { gmail_v1 } from 'googleapis';
 import base64url from 'base64url';
 import DOMPurify from 'dompurify';
 
-export const getSubject = (message: gmail_v1.Schema$Message): string =>
-  message.payload.headers.find((header) => header.name === 'Subject').value;
+const getHeader = (
+  message: gmail_v1.Schema$Message,
+  name: string,
+): gmail_v1.Schema$MessagePartHeader | undefined =>
+  message.payload.headers.find((header) => header.name === name);
+
+export const getSubject = (
+  message: gmail_v1.Schema$Message,
+): string | undefined => {
+  const header = getHeader(message, 'Subject');
+  return header?.value;
+};
 
 export const getBodyHTML = (message: gmail_v1.Schema$Message): string => {
   const htmlPart = message.payload.parts.find(
