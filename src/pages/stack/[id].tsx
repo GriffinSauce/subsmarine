@@ -27,7 +27,8 @@ const PageContent = () => {
   const { message } = data;
   return (
     <>
-      <h2>{getHeaderValue(message, 'Subject')}</h2>
+      <h1 className="h2">{getHeaderValue(message, 'Subject')}</h1>
+      <hr className="my-3" />
       <MessageBody message={message} />
     </>
   );

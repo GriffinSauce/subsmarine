@@ -7,8 +7,10 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Container>
-        <h1>Stack</h1>
-        <MessageList />
+        <div className="grid gap-3">
+          <h1 className="h1">Stack</h1>
+          <MessageList />
+        </div>
       </Container>
     </Layout>
   );

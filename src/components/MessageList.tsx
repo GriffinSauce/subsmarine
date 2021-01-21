@@ -10,7 +10,7 @@ const MessageList: React.FC = () => {
 
   const { messages } = data;
   return (
-    <ul>
+    <ul className="space-y-6">
       {messages.map((message) => (
         <li key={message.id}>
           <MessageListItem message={message} />

@@ -12,7 +12,7 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Container>
-        <h1>Letterbox</h1>
+        <h1 className="h1">Letterbox</h1>
         <p>Letterbox is an app that lets you read your newsletters in peace.</p>
 
         <div style={{ opacity: loading ? 0 : 1 }}>

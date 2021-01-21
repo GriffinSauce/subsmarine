@@ -8,7 +8,6 @@ interface Props {
 const MessageBody: React.FC<Props> = ({ message }) => {
   return (
     <div
-      className="border border-gray-300"
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: getBodyHTML(message) }}
     />
