@@ -108,3 +108,8 @@ dist
 .env.local
 
 .DS_Store
+
+# next-pwa output
+public/sw.js
+public/sw.js.map
+public/workbox-*
