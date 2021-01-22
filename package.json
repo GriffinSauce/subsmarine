@@ -9,10 +9,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
+    "lint:es": "eslint '**/*.{js,jsx,ts,tsx}'",
+    "lint:ts": "npx tsc -p tsconfig.json --noEmit",
+    "lint": "yarn lint:ts && yarn lint:es",
     "format": "prettier --write .",
     "test": "jest",
-    "test-watch": "jest --watch"
+    "test-watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "author": "Joris Griffioen (https://joris.rocks)",
   "license": "MIT",
