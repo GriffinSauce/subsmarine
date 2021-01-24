@@ -1,15 +1,12 @@
-import { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import Layout from 'components/Layout';
-import Container from 'components/Container';
 import MessageBody from 'components/MessageBody';
 import { getHeaderValue } from 'utils/message';
 import { useMessage } from 'api';
 
-const PageContent = () => {
-  const router = useRouter();
-  const { id } = router.query;
+interface Props {
+  id: string | undefined;
+}
 
+const Message: React.FC<Props> = ({ id }) => {
   const { isIdle, isLoading, isError, data } = useMessage(
     { id: `${id}` },
     {
@@ -20,7 +17,9 @@ const PageContent = () => {
     },
   );
 
-  if (isIdle || isLoading) return <div>loading...</div>;
+  if (isIdle) return <div>Select a message</div>;
+
+  if (isLoading) return <div>loading...</div>;
 
   if (isError) return <div>failed to load</div>;
 
@@ -34,14 +33,4 @@ const PageContent = () => {
   );
 };
 
-const Page: NextPage = () => {
-  return (
-    <Layout>
-      <Container>
-        <PageContent />
-      </Container>
-    </Layout>
-  );
-};
-
-export default Page;
+export default Message;

@@ -2,6 +2,12 @@ import { gmail_v1 } from 'googleapis';
 import base64url from 'base64url';
 import DOMPurify from 'dompurify';
 
+enum Label {
+  Unread = 'UNREAD',
+  Important = 'IMPORTANT',
+  CategoryUpdates = 'CATEGORY_UPDATES',
+}
+
 const getHeader = (
   message: gmail_v1.Schema$Message,
   name: string,
@@ -24,3 +30,6 @@ export const getBodyHTML = (message: gmail_v1.Schema$Message): string => {
   const dirtyHTML = base64url.decode(data);
   return DOMPurify.sanitize(dirtyHTML, { USE_PROFILES: { html: true } });
 };
+
+export const getIsRead = (message: gmail_v1.Schema$Message): boolean =>
+  message.labelIds.includes(Label.Unread);
