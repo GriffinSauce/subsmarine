@@ -38,7 +38,8 @@
     "react-dom": "17.0.1",
     "react-icons": "^4.1.0",
     "react-query": "3.5.16",
-    "tailwindcss": "^2.0.2"
+    "tailwindcss": "^2.0.2",
+    "use-media": "^1.4.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.8",
