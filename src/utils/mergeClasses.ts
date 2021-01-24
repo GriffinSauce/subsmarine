@@ -73,7 +73,6 @@ const mergeClassLists = (classLists: string[]): string => {
   classLists.forEach((classList: string) => {
     classList.split(' ').forEach((className: string) => {
       const key = getKey(className);
-      console.log('key', key);
       classesByPrefix.set(key, className);
     });
   });
