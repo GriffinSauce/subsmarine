@@ -1,6 +1,16 @@
 import colors from 'tailwindcss/colors';
 
 /**
+ * Merge multiple class lists, with toggling and overrides
+ *
+ * <div className={mergeClasses(
+ *   'p-3 text-blue-500',
+ *   isActive && 'text-white bg-blue-500 font-semibold'
+ * )} />
+ *
+ * isActive true will return 'p-3 text-white bg-blue-500 font-semibold'
+ * isActive false will return 'p-3 text-blue-500'
+ *
  * Ispired by
  * https://github.com/robit-dev/tailwindcss-class-combiner#readme
  */
