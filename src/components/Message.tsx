@@ -1,6 +1,6 @@
 import MessageBody from 'components/MessageBody';
+import { useMessage, useSetRead } from 'api';
 import { getHeaderValue } from 'utils/message';
-import { useMessage } from 'api';
 
 interface Props {
   id: string | undefined;
@@ -16,6 +16,8 @@ const Message: React.FC<Props> = ({ id }) => {
       refetchOnReconnect: false,
     },
   );
+
+  useSetRead(data?.message);
 
   if (isIdle) return <div>Select a message</div>;
 
