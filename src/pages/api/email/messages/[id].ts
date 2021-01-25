@@ -88,7 +88,7 @@ const handlePost = async (
   }
   debug('Fetched message');
 
-  res.status(204).send({ ok: true });
+  res.status(204).end();
 };
 
 export default async (
