@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { gmail_v1 } from 'googleapis';
 import { formatDistance } from 'date-fns';
-import { FiClock, FiMail, FiCheck, FiSun } from 'react-icons/fi';
+import { FiClock, FiMail, FiCheck } from 'react-icons/fi';
+import { HiSparkles } from 'react-icons/hi';
 import { getHeaderValue, getIsRead } from 'utils/message';
 import mergeClasses from 'utils/mergeClasses';
 
@@ -50,14 +51,18 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
           <span
             className={mergeClasses(
               'inline-block font-bold text-blue-500 rounded',
-              isRead && 'text-gray-500',
+              isRead && 'text-gray-500 font-semibold',
               isOpen &&
                 'px-1 ring ring-blue-500 font-semibold bg-blue-500 text-white',
             )}
           >
             {from.name}
           </span>
-          {isRead ? <FiCheck /> : <FiSun />}
+          {isRead ? (
+            <FiCheck className="text-gray-400" />
+          ) : (
+            <HiSparkles className="text-yellow-400" />
+          )}
         </div>
         <h2
           className={mergeClasses(
