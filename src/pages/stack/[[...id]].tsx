@@ -1,11 +1,13 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useMediaLayout } from 'use-media';
+import { useMediaQuery } from 'react-responsive';
 import { NextPage } from 'next';
 import { FiChevronLeft } from 'react-icons/fi';
 import Layout from 'components/Layout';
 import MessageList from 'components/MessageList';
 import Message from 'components/Message';
+import useIsMounted from 'utils/useIsMounted';
 
 const Page: NextPage = () => {
   // Next.js does one render with empty params
@@ -15,11 +17,14 @@ const Page: NextPage = () => {
   const params = (router.query.id as Array<string>) || []; // Catch-all is array
   const [id] = params;
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const isMobile = process.browser ? useMediaLayout({ maxWidth: 1024 }) : true;
+  const isMobile = useMediaQuery({ maxWidth: 1024 });
+  const isMounted = useIsMounted();
+
+  // Defer until hyrdated so we know the layout and route params
+  if (!isMounted) return null;
 
   return (
-    <Layout fullHeight={!isMobile}>
+    <Layout fullHeight>
       <div className="container flex flex-col min-h-0 px-3 mx-auto space-y-3">
         <h1 className="h1">Stack</h1>
         {isMobile ? (
@@ -31,10 +36,14 @@ const Page: NextPage = () => {
                     <FiChevronLeft /> Back to list
                   </a>
                 </Link>
-                <Message id={id} />
+                <div className="min-h-0 overflow-y-scroll">
+                  <Message id={id} />
+                </div>
               </>
             ) : (
-              <MessageList />
+              <div className="min-h-0 overflow-y-scroll">
+                <MessageList />
+              </div>
             )}
           </>
         ) : (
