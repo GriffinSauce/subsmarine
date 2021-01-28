@@ -7,9 +7,7 @@ const Page: NextPage = () => {
     <Layout>
       <Container>
         <div className="grid gap-3">
-          <p>
-            Letterbox is an app that lets you read your newsletters in peace.
-          </p>
+          <p>Subsmarine surfaces your email newsletters for easy reading.</p>
           <h2 className="h2">Terms of Service</h2>
           <p>
             THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY
