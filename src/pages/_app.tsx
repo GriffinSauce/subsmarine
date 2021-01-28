@@ -48,7 +48,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
         {/* <ThemeProvider defaultTheme="system" attribute="class"> */}
         <ThemeProvider defaultTheme="light" attribute="class">
           <Head>
-            <title>Letterbox</title>
+            <title>Subsmarine</title>
             <meta
               name="viewport"
               content="width=device-width, initial-scale=1.0"

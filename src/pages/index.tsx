@@ -12,8 +12,10 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Container>
-        <h1 className="h1">Letterbox</h1>
-        <p>Letterbox is an app that lets you read your newsletters in peace.</p>
+        <h1 className="h1">Subsmarine</h1>
+        <p>
+          Ahoy! Subsmarine surfaces your email newsletters for easy reading.
+        </p>
 
         <div style={{ opacity: loading ? 0 : 1 }}>
           {session ? (

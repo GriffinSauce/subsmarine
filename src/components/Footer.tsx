@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
       <Container>
         <ul className="py-3 space-x-3">
           <li className="inline-block text-blue-700">
-            <a href="https://github.com/GriffinSauce/letterbox">GitHub</a>
+            <a href="https://github.com/GriffinSauce/subsmarine">GitHub</a>
           </li>
           <li className="inline-block text-blue-700">
             <Link href="/policy">

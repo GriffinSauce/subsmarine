@@ -1,8 +1,8 @@
 {
-  "name": "letterbox",
-  "version": "0.0.1",
-  "description": "Letterbox is an app that lets you read your newsletters in peace.",
-  "repository": "https://github.com/GriffinSauce/letterbox.git",
+  "name": "subsmarine",
+  "version": "1.0.0",
+  "description": "Subsmarine surfaces your email newsletters for easy reading.",
+  "repository": "https://github.com/GriffinSauce/subsmarine.git",
   "homepage": "",
   "main": "",
   "scripts": {
