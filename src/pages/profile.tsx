@@ -1,9 +1,9 @@
 import { signIn, signOut, useSession } from 'next-auth/client';
 import { NextPage } from 'next';
+import { AuthProviderId } from 'types/auth';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
-
-const GOOGLE_PROVIDER_ID = 'google';
+import Avatar from 'components/Avatar';
 
 const Skeleton = () => <div>Loading...</div>;
 
@@ -15,7 +15,7 @@ const SignInCTA = () => (
       className="button-blue"
       onClick={(e) => {
         e.preventDefault();
-        signIn(GOOGLE_PROVIDER_ID);
+        signIn(AuthProviderId.Google);
       }}
     >
       Sign in
@@ -27,16 +27,9 @@ const Profile = () => {
   const [session] = useSession();
   return (
     <div className="grid gap-3">
-      <h1 className="h1">Your account</h1>
+      <h1 className="h1">Your profile</h1>
       <div className="flex items-center p-3 space-x-3 leading-none bg-gray-200 rounded-md">
-        {session.user.image && (
-          <span
-            style={{
-              backgroundImage: `url(${session.user.image})`,
-            }}
-            className="w-10 h-10 bg-white bg-cover rounded-full"
-          />
-        )}
+        <Avatar />
         <div>
           <strong>{session.user.name}</strong>
           <br />

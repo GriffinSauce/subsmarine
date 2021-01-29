@@ -5,3 +5,7 @@ export interface Token {
   user: Record<string, unknown>;
   error?: string;
 }
+
+export enum AuthProviderId {
+  Google = 'google',
+}

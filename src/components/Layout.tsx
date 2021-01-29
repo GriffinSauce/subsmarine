@@ -1,5 +1,6 @@
 import Header from 'components/Header';
 import Footer from 'components/Footer';
+import TabNavigation from 'components/TabNavigation';
 import mergeClasses from 'utils/mergeClasses';
 
 interface Props {
@@ -14,6 +15,7 @@ const Layout: React.FC<Props> = ({ fullHeight = false, children }) => {
       <Header />
       <main className="flex flex-col min-h-0">{children}</main>
       <Footer />
+      <TabNavigation />
     </div>
   );
 };
