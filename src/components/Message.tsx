@@ -1,5 +1,5 @@
 import MessageBody from 'components/MessageBody';
-import { useMessage, useSetRead } from 'api';
+import { useMessage, useSetRead } from 'api/client';
 import { getHeaderValue } from 'utils/message';
 
 interface Props {
