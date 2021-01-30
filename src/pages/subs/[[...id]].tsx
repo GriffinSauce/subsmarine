@@ -40,9 +40,7 @@ const Page: NextPage = () => {
                     <FiChevronLeft /> Back to list
                   </a>
                 </Link>
-                <div className="min-h-0 overflow-y-scroll">
-                  <Message id={id} />
-                </div>
+                <Message id={id} />
               </>
             ) : (
               <div className="min-h-0">
