@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useSession, signIn, Session } from 'next-auth/client';
+import { useSession, signIn } from 'next-auth/client';
 import { FiLayers, FiZap } from 'react-icons/fi';
 import Skeleton from 'react-loading-skeleton';
 import Container from 'components/Container';
