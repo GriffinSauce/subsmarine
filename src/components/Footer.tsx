@@ -4,19 +4,19 @@ import { version } from '../../package.json';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="mt-6">
+    <footer className="italic text-gray-700 bg-gray-100">
       <hr />
       <Container>
-        <ul className="py-3 space-x-3">
-          <li className="inline-block text-blue-700">
+        <ul className="py-1 space-x-4 text-right">
+          <li className="inline-block">
             <a href="https://github.com/GriffinSauce/subsmarine">GitHub</a>
           </li>
-          <li className="inline-block text-blue-700">
+          <li className="inline-block">
             <Link href="/policy">
               <a>Policy</a>
             </Link>
           </li>
-          <li className="inline-block italic text-blue-700">v{version}</li>
+          <li className="inline-block">v{version}</li>
         </ul>
       </Container>
     </footer>

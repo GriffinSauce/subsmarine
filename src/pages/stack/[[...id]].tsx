@@ -23,7 +23,7 @@ const Page: NextPage = () => {
   if (!isMounted) return null;
 
   return (
-    <Layout fullHeight={!isMobile}>
+    <Layout fullHeight={!isMobile} withFooter={false}>
       <div className="container flex flex-col min-h-0 px-3 mx-auto space-y-3">
         <h1 className="h1">Stack</h1>
         {isMobile ? (
