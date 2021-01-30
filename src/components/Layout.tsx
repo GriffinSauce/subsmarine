@@ -1,4 +1,3 @@
-import { useMediaQuery } from 'react-responsive';
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import TabNavigation from 'components/TabNavigation';
@@ -14,8 +13,6 @@ const Layout: React.FC<Props> = ({
   withFooter = true,
   children,
 }) => {
-  const isMobile = useMediaQuery({ maxWidth: 1024 });
-
   return (
     <div
       className={mergeClasses(
@@ -23,10 +20,10 @@ const Layout: React.FC<Props> = ({
         fullHeight ? 'max-h-screen' : 'min-h-screen',
       )}
     >
-      {!isMobile && <Header />}
+      <Header />
       <main className="flex flex-col flex-grow min-h-0">{children}</main>
       {withFooter && <Footer />}
-      {isMobile && <TabNavigation />}
+      <TabNavigation />
     </div>
   );
 };

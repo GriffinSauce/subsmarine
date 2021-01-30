@@ -1,33 +1,53 @@
 import { signIn, signOut, useSession } from 'next-auth/client';
 import { NextPage } from 'next';
+import Skeleton from 'react-loading-skeleton';
+import { FiUser } from 'react-icons/fi';
 import { AuthProviderId } from 'types/auth';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
 import Avatar from 'components/Avatar';
 
-const Skeleton = () => <div>Loading...</div>;
+const Title: React.FC = ({ children }) => (
+  <h1 className="flex flex-row items-center justify-start space-x-3 h1">
+    <FiUser />
+    <span>{children}</span>
+  </h1>
+);
+
+const ProfileSkeleton = () => (
+  <>
+    <Title>
+      <Skeleton width={200} />
+    </Title>
+    <div>
+      <Skeleton width={200} />
+    </div>
+  </>
+);
 
 const SignInCTA = () => (
-  <div className="grid gap-3">
-    <h1 className="h1">You are not signed in</h1>
-    <a
-      href="/api/auth/signin/Google"
-      className="button-blue"
-      onClick={(e) => {
-        e.preventDefault();
-        signIn(AuthProviderId.Google);
-      }}
-    >
-      Sign in
-    </a>
-  </div>
+  <>
+    <Title>You are not signed in</Title>{' '}
+    <div>
+      <a
+        href="/api/auth/signin/Google"
+        className="inline-block button-blue"
+        onClick={(e) => {
+          e.preventDefault();
+          signIn(AuthProviderId.Google);
+        }}
+      >
+        Sign in
+      </a>
+    </div>
+  </>
 );
 
 const Profile = () => {
   const [session] = useSession();
   return (
-    <div className="grid gap-3">
-      <h1 className="h1">Your profile</h1>
+    <>
+      <Title>Your profile</Title>
       <div className="flex items-center p-3 space-x-3 leading-none bg-gray-200 rounded-md">
         <Avatar />
         <div>
@@ -48,14 +68,14 @@ const Profile = () => {
           Sign out
         </a>
       </div>
-    </div>
+    </>
   );
 };
 
 const ProfileContent: React.FC = () => {
   const [session, loading] = useSession();
 
-  if (!session && loading) return <Skeleton />;
+  if (!session && loading) return <ProfileSkeleton />;
   if (session) return <Profile />;
   return <SignInCTA />;
 };
@@ -64,7 +84,9 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Container>
-        <ProfileContent />
+        <div className="grid gap-6 mt-6">
+          <ProfileContent />
+        </div>
       </Container>
     </Layout>
   );

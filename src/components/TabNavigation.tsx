@@ -5,17 +5,21 @@ import mergeClasses from 'utils/mergeClasses';
 
 const iconSize = 'w-8 h-8';
 
+const FixedPlaceholder = () => (
+  <div className="p-3">
+    <div className={iconSize} />
+  </div>
+);
+
 const TabNavigation: React.FC = () => {
   return (
-    <>
-      <div className="p-3">
-        <div className={iconSize} />
-      </div>
+    <div className="lg:hidden">
+      <FixedPlaceholder />
       <div className="fixed bottom-0 w-full bg-white">
         <hr />
         <ul className="grid grid-cols-2">
           <li>
-            <Link href="/stack">
+            <Link href="/subs">
               <a className="flex items-center justify-center h-full p-3 space-x-2">
                 <div
                   className={mergeClasses(
@@ -39,7 +43,7 @@ const TabNavigation: React.FC = () => {
           </li>
         </ul>
       </div>
-    </>
+    </div>
   );
 };
 

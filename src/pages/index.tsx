@@ -3,8 +3,7 @@ import { NextPage } from 'next';
 import { signIn, useSession } from 'next-auth/client';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
-
-const GOOGLE_PROVIDER_ID = 'google';
+import { AuthProviderId } from 'types/auth';
 
 const Page: NextPage = () => {
   const [session, loading] = useSession();
@@ -21,8 +20,8 @@ const Page: NextPage = () => {
           {session ? (
             <p>
               Go read{' '}
-              <Link href="/stack">
-                <button type="button">Your stack</button>
+              <Link href="/subs">
+                <button type="button">Your subs</button>
               </Link>
             </p>
           ) : (
@@ -33,7 +32,7 @@ const Page: NextPage = () => {
                   href="/api/auth/signin/Google"
                   onClick={(e) => {
                     e.preventDefault();
-                    signIn(GOOGLE_PROVIDER_ID);
+                    signIn(AuthProviderId.Google);
                   }}
                 >
                   <button type="button">Sign in</button>
