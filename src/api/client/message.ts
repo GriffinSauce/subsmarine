@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/client';
 import { useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import fetcher from 'utils/fetcher';
 import { ResponseData } from 'pages/api/email/messages/[id]';
@@ -17,13 +18,15 @@ export const fetchMessage = ({
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function useMessage(
   { id }: FetchMessageOptions,
-  options?: UseQueryOptions<ResponseData>,
+  options: UseQueryOptions<ResponseData> = {},
 ) {
-  return useQuery<ResponseData>(
-    ['messages', id],
-    () => fetchMessage({ id }),
-    options,
-  );
+  const [session] = useSession();
+  const isAuthenticated = !!session?.user;
+
+  return useQuery<ResponseData>(['messages', id], () => fetchMessage({ id }), {
+    ...options,
+    enabled: isAuthenticated && options.enabled,
+  });
 }
 
 interface ModifyMessageOptions {

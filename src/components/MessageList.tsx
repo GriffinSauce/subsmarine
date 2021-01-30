@@ -2,9 +2,9 @@ import MessageListItem from 'components/MessageListItem';
 import { useMessages } from 'api/client';
 
 const MessageList: React.FC = () => {
-  const { isLoading, isError, data } = useMessages();
+  const { isIdle, isLoading, isError, data } = useMessages();
 
-  if (isLoading) return <div>loading...</div>;
+  if (isIdle || isLoading) return <div>loading...</div>;
 
   if (isError) return <div>failed to load</div>;
 
