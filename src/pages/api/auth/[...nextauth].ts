@@ -135,5 +135,5 @@ const options = {
   debug: false,
 };
 
-export default (req: NextApiRequest, res: NextApiResponse): void =>
+export default (req: NextApiRequest, res: NextApiResponse): Promise<void> =>
   NextAuth(req, res, options);

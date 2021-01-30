@@ -1,6 +1,8 @@
 import { getSession } from 'next-auth/client';
-import { google, gmail_v1 } from 'googleapis';
+import { gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { getMessage, modifyMessage, MessageFormat } from 'utils/gmail';
+import makeCache from 'utils/makeCache';
 import Debug from 'debug';
 
 const debug = Debug('api:email:messages:id');
@@ -8,6 +10,24 @@ const debug = Debug('api:email:messages:id');
 export interface ResponseData {
   message: gmail_v1.Schema$Message;
 }
+
+interface GetMessageParams {
+  userId: string;
+  messageId: string;
+  format: MessageFormat;
+  accessToken: string;
+}
+
+const getMessageCached = makeCache<
+  GetMessageParams,
+  ReturnType<typeof getMessage>
+>({
+  generateKey: ({ userId, messageId, format }) =>
+    `user:${userId}:messages:${messageId}:${format}`,
+  fetchFreshValue: ({ accessToken, messageId, format }) =>
+    getMessage({ accessToken, messageId, format }),
+  ttl: 60 * 60 * 24, // One day in seconds,
+});
 
 const handleGet = async (
   req: NextApiRequest,
@@ -20,33 +40,22 @@ const handleGet = async (
     return;
   }
 
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_ID,
-    process.env.GOOGLE_SECRET,
-  );
-  oauth2Client.setCredentials({
-    access_token: session.accessToken,
-  });
+  const { accessToken, user } = session;
 
-  const gmail = google.gmail({
-    version: 'v1',
-    auth: oauth2Client,
-  });
-
+  // @ts-expect-error - user.id is missing on type
+  const userId = user.id;
   const { id } = req.query;
 
-  let message: gmail_v1.Schema$Message;
-  try {
-    const response = await gmail.users.messages.get({
-      userId: 'me',
-      id: `${id}`,
-      format: 'FULL',
-    });
-    message = response.data;
-  } catch (err) {
-    throw new Error(`Error fetching message ${id} - ${err.message}`);
-  }
-  debug('Fetched message');
+  debug(`fetching message ${id}`);
+
+  const message = await getMessageCached({
+    userId,
+    accessToken,
+    messageId: `${id}`,
+    format: MessageFormat.Full,
+  });
+
+  debug(`fetched message ${id}`);
 
   res.json({ message });
 };
@@ -62,31 +71,14 @@ const handlePost = async (
     return;
   }
 
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_ID,
-    process.env.GOOGLE_SECRET,
-  );
-  oauth2Client.setCredentials({
-    access_token: session.accessToken,
-  });
-
-  const gmail = google.gmail({
-    version: 'v1',
-    auth: oauth2Client,
-  });
-
+  const { accessToken } = session;
   const { id } = req.query;
 
-  try {
-    await gmail.users.messages.modify({
-      userId: 'me',
-      id: `${id}`,
-      requestBody: req.body,
-    });
-  } catch (err) {
-    throw new Error(`Error fetching message ${id} - ${err.message}`);
-  }
-  debug('Fetched message');
+  await modifyMessage({
+    accessToken,
+    messageId: `${id}`,
+    update: req.body,
+  });
 
   res.status(204).end();
 };
