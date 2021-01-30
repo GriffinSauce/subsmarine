@@ -18,6 +18,7 @@ const queryClient = new QueryClient({
   },
 });
 
+// Successful fetches are cached locally but always revalidated
 persistWithLocalStorage(queryClient);
 
 // Use the <Provider> to improve performance and allow components that call
