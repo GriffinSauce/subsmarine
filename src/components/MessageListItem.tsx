@@ -45,7 +45,7 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
   const isRead = getIsRead(message);
 
   return (
-    <Link href={`/stack/${message.id}`}>
+    <Link href={`/subs/${message.id}`}>
       <a className="grid gap-1 leading-none text-left rounded focus:outline-none focus:ring ring-offset-4 ring-blue-200">
         <div className="flex flex-row items-center space-x-2">
           <span

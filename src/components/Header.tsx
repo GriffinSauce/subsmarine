@@ -1,67 +1,75 @@
-import { signIn, signOut, useSession } from 'next-auth/client';
+import Link from 'next/link';
+import { useSession, signIn } from 'next-auth/client';
+import { FiLayers, FiZap } from 'react-icons/fi';
+import Skeleton from 'react-loading-skeleton';
 import Container from 'components/Container';
-import Nav from 'components/Nav';
+import Logo from 'components/Logo';
+import Avatar from 'components/Avatar';
+import { AuthProviderId } from 'types/auth';
 
-const GOOGLE_PROVIDER_ID = 'google';
+const ProfileLink = () => {
+  const [session] = useSession();
+  return (
+    <Link href="/profile">
+      <a className="flex items-center px-4 py-3 space-x-3 leading-none bg-white rounded-xl">
+        <Avatar className="w-8 h-8" />
+        <div>
+          <small>
+            {session?.user ? 'Signed in as' : <Skeleton width={100} />}
+          </small>
+          <br />
+          <strong>{session?.user?.name || <Skeleton width={120} />}</strong>
+        </div>
+      </a>
+    </Link>
+  );
+};
+
+const SignupLink = () => (
+  <Link href="/profile">
+    <a
+      className="flex items-center justify-center px-4 py-3 space-x-2 text-lg font-semibold bg-white rounded-xl"
+      href="/api/auth/signin/Google"
+      onClick={(e) => {
+        e.preventDefault();
+        signIn(AuthProviderId.Google);
+      }}
+    >
+      <FiZap />
+      <span>Get started</span>
+    </a>
+  </Link>
+);
 
 const Header: React.FC = () => {
   const [session, loading] = useSession();
 
   return (
-    <header>
+    <header className="hidden py-2 bg-gray-100 border-b border-gray-200 lg:block">
       <Container>
-        {/* Set min-height to avoid page reflow while session loading */}
-        <div className="min-h-10">
-          <div
-            className={`flex flex-row items-center justify-between w-full p-3 transition-all transform bg-gray-200 rounded-b-xl ${
-              !session && loading ? '-translate-y-12 opacity-0' : ''
-            }`}
-          >
-            {!session && (
-              <>
-                <span>You are not signed in</span>
-                <a
-                  href="/api/auth/signin/Google"
-                  className="button-blue"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    signIn(GOOGLE_PROVIDER_ID);
-                  }}
-                >
-                  Sign in
+        <nav>
+          <ul className="flex flex-row items-center justify-between w-full space-x-3">
+            <li>
+              <Link href="/">
+                <a className="flex items-center justify-center px-4 py-3 space-x-2 text-lg font-semibold bg-white rounded-xl">
+                  <Logo className="h-6" />
+                  <span>Subsmarine</span>
                 </a>
-              </>
-            )}
-            {session && (
-              <>
-                <div className="flex items-center space-x-3 leading-none">
-                  {session.user.image && (
-                    <span
-                      style={{ backgroundImage: `url(${session.user.image})` }}
-                      className="w-10 h-10 bg-white bg-cover rounded-full"
-                    />
-                  )}
-                  <div>
-                    <small>Signed in as</small>
-                    <br />
-                    <strong>{session.user.name}</strong>
-                  </div>
-                </div>
-                <a
-                  href="/api/auth/signout"
-                  className="button-gray"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    signOut();
-                  }}
-                >
-                  Sign out
+              </Link>
+            </li>
+            <li>
+              <Link href="/subs">
+                <a className="flex items-center justify-center px-4 py-3 space-x-2 text-lg font-semibold bg-white rounded-xl">
+                  <FiLayers />
+                  <span>Subs</span>
                 </a>
-              </>
-            )}
-          </div>
-        </div>
-        <Nav />
+              </Link>
+            </li>
+            <li className="flex justify-end flex-grow">
+              {loading || session ? <ProfileLink /> : <SignupLink />}
+            </li>
+          </ul>
+        </nav>
       </Container>
     </header>
   );
