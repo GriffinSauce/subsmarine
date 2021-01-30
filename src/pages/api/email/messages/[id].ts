@@ -26,7 +26,7 @@ const getMessageCached = makeCache<
     `user:${userId}:messages:${messageId}:${format}`,
   fetchFreshValue: ({ accessToken, messageId, format }) =>
     getMessage({ accessToken, messageId, format }),
-  ttl: 60 * 60, // One hour in seconds,
+  ttl: 60 * 60 * 24, // One day in seconds,
 });
 
 const handleGet = async (
