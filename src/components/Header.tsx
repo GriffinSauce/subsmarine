@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useSession, signIn } from 'next-auth/client';
+import { useSession, signIn, Session } from 'next-auth/client';
 import { FiLayers, FiZap } from 'react-icons/fi';
 import Skeleton from 'react-loading-skeleton';
 import Container from 'components/Container';
@@ -7,19 +7,25 @@ import Logo from 'components/Logo';
 import Avatar from 'components/Avatar';
 import { AuthProviderId } from 'types/auth';
 
-const ProfileLink = ({ user }) => (
-  <Link href="/profile">
-    <a className="flex items-center px-4 py-3 space-x-3 leading-none bg-white rounded-xl">
-      <Avatar className="w-8 h-8" />
-      <div>
-        <small>{user ? 'Signed in as' : <Skeleton width={100} />}</small>
-        <br />
-        <strong>{user?.name || <Skeleton width={120} />}</strong>
-      </div>
-    </a>
-  </Link>
-);
-const SignupLink = ({ user }) => (
+const ProfileLink = () => {
+  const [session] = useSession();
+  return (
+    <Link href="/profile">
+      <a className="flex items-center px-4 py-3 space-x-3 leading-none bg-white rounded-xl">
+        <Avatar className="w-8 h-8" />
+        <div>
+          <small>
+            {session?.user ? 'Signed in as' : <Skeleton width={100} />}
+          </small>
+          <br />
+          <strong>{session?.user?.name || <Skeleton width={120} />}</strong>
+        </div>
+      </a>
+    </Link>
+  );
+};
+
+const SignupLink = () => (
   <Link href="/profile">
     <a
       className="flex items-center justify-center px-4 py-3 space-x-2 text-lg font-semibold bg-white rounded-xl"
@@ -60,11 +66,7 @@ const Header: React.FC = () => {
               </Link>
             </li>
             <li className="flex justify-end flex-grow">
-              {loading || session ? (
-                <ProfileLink user={session?.user} />
-              ) : (
-                <SignupLink />
-              )}
+              {loading || session ? <ProfileLink /> : <SignupLink />}
             </li>
           </ul>
         </nav>
