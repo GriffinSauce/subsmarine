@@ -5,7 +5,7 @@ import { getMessage, modifyMessage, MessageFormat } from 'utils/gmail';
 import makeCache from 'utils/makeCache';
 import Debug from 'debug';
 
-const debug = Debug('api:email:messages:id');
+const debug = Debug('subsmarine:api:email:messages:id');
 
 export interface ResponseData {
   message: gmail_v1.Schema$Message;

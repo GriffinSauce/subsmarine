@@ -10,7 +10,7 @@ import {
 } from 'utils/gmail';
 import makeCache from 'utils/makeCache';
 
-const debug = Debug('api:email:messages');
+const debug = Debug('subsmarine:api:email:messages');
 
 export interface ResponseData {
   messages: gmail_v1.Schema$Message[];
