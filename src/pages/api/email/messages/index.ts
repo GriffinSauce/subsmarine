@@ -1,5 +1,5 @@
 import { getSession } from 'next-auth/client';
-import { google, gmail_v1 } from 'googleapis';
+import { gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
 import Debug from 'debug';
 import {
@@ -8,62 +8,32 @@ import {
   getMessage,
   MessageFormat,
 } from 'utils/gmail';
-import redisClient from 'utils/redisClient';
+import makeCache from 'utils/makeCache';
 
 const debug = Debug('api:email:messages');
-
-google.options({
-  http2: true,
-});
 
 export interface ResponseData {
   messages: gmail_v1.Schema$Message[];
 }
 
-const LABEL_CACHE_TTL_SECONDS = 60 * 60 * 24 * 7; // One week
+interface GetNewsletterLabelParams {
+  userId: string;
+  accessToken: string;
+}
 
-const getNewsletterLabelCached = async ({
-  userId,
-  accessToken,
-}): Promise<gmail_v1.Schema$Label> => {
-  // If caching is abstracted be careful to escape key delimiters from input
-  const key = `user:${userId}:labels:newsletter`;
-
-  const cachedValue = await redisClient.get(key);
-
-  if (cachedValue) {
-    try {
-      console.info(`Cache hit - ${key}`);
-      return JSON.parse(cachedValue);
-    } catch (err) {
-      console.error(`Error parsing cached value ${err.message}`);
-    }
-  }
-
-  const freshValue = await getNewsletterLabel({ accessToken });
-
-  try {
-    console.info(`Cache miss - ${key}`);
-    await redisClient.set(key, JSON.stringify(freshValue));
-    await redisClient.expire(key, LABEL_CACHE_TTL_SECONDS);
-  } catch (err) {
-    console.error(`Error saving value to cache ${err.message}`);
-  }
-
-  return freshValue;
-};
+const getNewsletterLabelCached = makeCache<
+  GetNewsletterLabelParams,
+  ReturnType<typeof getNewsletterLabel>
+>({
+  generateKey: ({ userId }) => `user:${userId}:labels:newsletter`,
+  fetchFreshValue: ({ accessToken }) => getNewsletterLabel({ accessToken }),
+  ttl: 60 * 60 * 24 * 7, // One week in seconds,
+});
 
 export default async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>,
 ): Promise<void> => {
-  let start = new Date().getTime();
-  const logDelay = (msg) => {
-    const now = new Date().getTime();
-    console.log(`After +${now - start}ms - ${msg}`);
-    start = now;
-  };
-
   const session = await getSession({ req });
   if (!session) {
     // @ts-expect-error - TODO: find typing that works with swr
@@ -71,7 +41,7 @@ export default async (
     return;
   }
 
-  logDelay('got session');
+  debug('fetching messages');
 
   const { accessToken, user } = session;
 
@@ -82,18 +52,14 @@ export default async (
     userId,
     accessToken,
   });
-  debug('Fetched label', newsletterLabel);
-
-  logDelay('got label');
+  debug('fetched label', newsletterLabel);
 
   const messages = await getBaseMessages({
     accessToken,
     labelId: newsletterLabel.id,
     maxResults: 50,
   });
-  debug('Fetched message list');
-
-  logDelay('got messages');
+  debug('fetched message list');
 
   // Add labels and headers to messages
   const messagesWithMeta: gmail_v1.Schema$Message[] = await Promise.all(
@@ -105,8 +71,6 @@ export default async (
       }),
     ),
   );
-
-  logDelay('got full messages');
 
   res.json({ messages: messagesWithMeta });
 };

@@ -2,10 +2,32 @@ import { getSession } from 'next-auth/client';
 import { gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getMessage, modifyMessage, MessageFormat } from 'utils/gmail';
+import makeCache from 'utils/makeCache';
+import Debug from 'debug';
+
+const debug = Debug('api:email:messages:id');
 
 export interface ResponseData {
   message: gmail_v1.Schema$Message;
 }
+
+interface GetMessageParams {
+  userId: string;
+  messageId: string;
+  format: MessageFormat;
+  accessToken: string;
+}
+
+const getMessageCached = makeCache<
+  GetMessageParams,
+  ReturnType<typeof getMessage>
+>({
+  generateKey: ({ userId, messageId, format }) =>
+    `user:${userId}:messages:${messageId}:${format}`,
+  fetchFreshValue: ({ accessToken, messageId, format }) =>
+    getMessage({ accessToken, messageId, format }),
+  ttl: 60 * 60, // One hour in seconds,
+});
 
 const handleGet = async (
   req: NextApiRequest,
@@ -18,14 +40,22 @@ const handleGet = async (
     return;
   }
 
-  const { accessToken } = session;
+  const { accessToken, user } = session;
+
+  // @ts-expect-error - user.id is missing on type
+  const userId = user.id;
   const { id } = req.query;
 
-  const message = await getMessage({
+  debug(`fetching message ${id}`);
+
+  const message = await getMessageCached({
+    userId,
     accessToken,
     messageId: `${id}`,
     format: MessageFormat.Full,
   });
+
+  debug(`fetched message ${id}`);
 
   res.json({ message });
 };
