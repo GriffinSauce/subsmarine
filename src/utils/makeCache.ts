@@ -1,7 +1,7 @@
 import redisClient from 'utils/redisClient';
 import Debug from 'debug';
 
-const debug = Debug('cache');
+const debug = Debug('subsmarine:cache');
 
 interface CacheOptions<Params, ReturnValue> {
   generateKey: (params: Params) => string;
@@ -17,11 +17,16 @@ const makeCache = <Params, ReturnValue extends Promise<any>>({
   // @ts-expect-error - ReturnValue is not a valid return?
   return async (params: Params): ReturnValue => {
     const key = generateKey(params);
-    debug(`try - ${key}`);
 
-    const cachedValue = await redisClient.get(key);
+    let cachedValue: string | null;
+    try {
+      debug(`try - ${key}`);
+      cachedValue = await redisClient.get(key);
+    } catch (err) {
+      console.error(`Error parsing cached value ${err.message}`);
+    }
 
-    if (cachedValue && typeof cachedValue === 'string') {
+    if (cachedValue) {
       try {
         debug(`hit - ${key}`);
         return JSON.parse(cachedValue);

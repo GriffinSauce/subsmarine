@@ -1,4 +1,4 @@
-import redis from 'async-redis';
+import Redis from 'ioredis';
 
 const host = process.env.REDIS_ENDPOINT;
 const portRaw = process.env.REDIS_PORT;
@@ -10,15 +10,15 @@ if (!password) throw new Error('REDIS_PASSWORD required');
 
 const port = parseInt(portRaw, 10);
 
-const client = redis.createClient({
+const redis = new Redis({
   port,
   host,
   password,
   tls: {},
 });
 
-client.on('error', (err) => {
+redis.on('error', (err) => {
   throw err;
 });
 
-export default client;
+export default redis;
