@@ -23,7 +23,7 @@ const makeCache = <Params, ReturnValue extends Promise<any>>({
       debug(`try - ${key}`);
       cachedValue = await redisClient.get(key);
     } catch (err) {
-      console.error(`Error parsing cached value ${err.message}`);
+      console.error(`Error getting ${err.message}`);
     }
 
     if (cachedValue) {
