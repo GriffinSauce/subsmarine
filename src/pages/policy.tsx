@@ -1,13 +1,18 @@
 import { NextPage } from 'next';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
+import Logo from 'components/Logo';
 
 const Page: NextPage = () => {
   return (
     <Layout>
       <Container>
-        <div className="grid gap-3">
-          <p>Subsmarine surfaces your email newsletters for easy reading.</p>
+        <div className="mt-6 space-y-6 text-center">
+          <Logo className="inline-block h-24" />
+          <h1 className="h1">Subsmarine</h1>
+          <p className="text-lg">
+            Subsmarine surfaces your email newsletters for easy reading.
+          </p>
           <h2 className="h2">Terms of Service</h2>
           <p>
             THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY
@@ -26,8 +31,7 @@ const Page: NextPage = () => {
           </p>
           <p>
             Data provided to this site is exclusively used to support reading
-            your own email and is not passed to any third party services other
-            than Google.
+            your own email.
           </p>
         </div>
       </Container>

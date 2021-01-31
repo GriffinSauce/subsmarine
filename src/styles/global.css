@@ -35,11 +35,3 @@ html {
 .h6 {
   @apply text-sm font-semibold;
 }
-
-.button-gray {
-  @apply px-5 py-3 font-semibold leading-none text-gray-500 bg-gray-200 rounded hover:bg-gray-300;
-}
-
-.button-blue {
-  @apply px-5 py-3 font-semibold leading-none text-white bg-blue-500 rounded hover:bg-blue-600;
-}

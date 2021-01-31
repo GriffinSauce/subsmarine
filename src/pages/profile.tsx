@@ -5,6 +5,7 @@ import { FiUser } from 'react-icons/fi';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
 import Avatar from 'components/Avatar';
+import Button from 'components/Button';
 import useRedirectUnauthenticated from 'utils/useRedirectUnauthenticated';
 
 const Title: React.FC = ({ children }) => (
@@ -41,13 +42,12 @@ const Profile = () => {
       <div>
         <a
           href="/api/auth/signout"
-          className="inline-block button-blue"
           onClick={(e) => {
             e.preventDefault();
             signOut();
           }}
         >
-          Sign out
+          <Button as="span">Sign out</Button>
         </a>
       </div>
     </>

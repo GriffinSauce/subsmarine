@@ -7,6 +7,7 @@ import Logo from 'components/Logo';
 import Layout from 'components/Layout';
 import MessageList from 'components/MessageList';
 import Message from 'components/Message';
+import Button from 'components/Button';
 import useIsMounted from 'utils/useIsMounted';
 import useRedirectUnauthenticated from 'utils/useRedirectUnauthenticated';
 import { BreakPoints } from 'types/theme';
@@ -41,8 +42,10 @@ const Page: NextPage = () => {
                 {id ? (
                   <>
                     <Link href="/subs">
-                      <a className="flex items-center self-start button-blue">
-                        <FiChevronLeft /> Back to list
+                      <a>
+                        <Button as="span" className="self-start">
+                          <FiChevronLeft /> Back to list
+                        </Button>
                       </a>
                     </Link>
                     <Message id={id} />

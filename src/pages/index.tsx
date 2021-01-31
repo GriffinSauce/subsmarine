@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import { CgSpinner } from 'react-icons/cg';
 import { NextPage } from 'next';
 import { signIn, useSession } from 'next-auth/client';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
+import Logo from 'components/Logo';
+import Button from 'components/Button';
 import { AuthProviderId } from 'types/auth';
 
 const Page: NextPage = () => {
@@ -11,34 +14,51 @@ const Page: NextPage = () => {
   return (
     <Layout>
       <Container>
-        <h1 className="h1">Subsmarine</h1>
-        <p>
-          Ahoy! Subsmarine surfaces your email newsletters for easy reading.
-        </p>
+        <div className="mt-6 space-y-6 text-center">
+          <Logo className="inline-block h-40" />
+          <h1 className="h1">Subsmarine</h1>
+          <p className="text-lg">
+            Ahoy! Subsmarine surfaces your email newsletters for easy reading.
+          </p>
 
-        <div style={{ opacity: loading ? 0 : 1 }}>
-          {session ? (
-            <p>
-              Go read{' '}
-              <Link href="/subs">
-                <button type="button">Your subs</button>
-              </Link>
-            </p>
+          {loading ? (
+            <CgSpinner className="inline-block text-3xl text-blue-400 animate-spin" />
           ) : (
-            <>
-              <p>Sign in with your Google Account to get started.</p>
-              <p>
-                <a
-                  href="/api/auth/signin/Google"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    signIn(AuthProviderId.Google);
-                  }}
-                >
-                  <button type="button">Sign in</button>
-                </a>
-              </p>
-            </>
+            <div
+              className="mt-6 space-y-6"
+              style={{ opacity: loading ? 0 : 1 }}
+            >
+              {session ? (
+                <>
+                  <p>
+                    <Link href="/subs">
+                      <a>
+                        <Button as="span">Get reading</Button>
+                      </a>
+                    </Link>
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>
+                    Subsmarine only works with Gmail for now.
+                    <br />
+                    Sign in to get started.
+                  </p>
+                  <p>
+                    <a
+                      href="/api/auth/signin/Google"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        signIn(AuthProviderId.Google);
+                      }}
+                    >
+                      <Button as="span">Sign in</Button>
+                    </a>
+                  </p>
+                </>
+              )}
+            </div>
           )}
         </div>
       </Container>
