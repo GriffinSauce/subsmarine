@@ -9,7 +9,7 @@ interface CacheOptions<Params, ReturnValue> {
   ttl: number;
 }
 
-const makeCache = <Params, ReturnValue extends Promise<any>>({
+const makeCache = <Params, ReturnValue extends Promise<unknown>>({
   generateKey,
   fetchFreshValue,
   ttl,

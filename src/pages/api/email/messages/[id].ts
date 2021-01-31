@@ -1,7 +1,8 @@
 import { getSession } from 'next-auth/client';
 import { gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getMessage, modifyMessage, MessageFormat } from 'utils/gmail';
+import { getMessage, modifyMessage } from 'utils/gmail';
+import { MessageFormat } from 'types/gmail';
 import makeCache from 'utils/makeCache';
 import Debug from 'debug';
 
@@ -95,7 +96,7 @@ export default async (
       await handlePost(req, res);
       break;
     default:
-      res.status(405).end(); //Method Not Allowed
+      res.status(405).end();
       break;
   }
 };

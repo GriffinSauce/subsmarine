@@ -1,7 +1,7 @@
 import { gmail_v1 } from 'googleapis';
 import base64url from 'base64url';
 import DOMPurify from 'dompurify';
-import { Label } from 'types/message';
+import { SystemLabelId } from 'types/gmail';
 
 const getHeader = (
   message: gmail_v1.Schema$Message,
@@ -27,4 +27,4 @@ export const getBodyHTML = (message: gmail_v1.Schema$Message): string => {
 };
 
 export const getIsRead = (message: gmail_v1.Schema$Message): boolean =>
-  !message.labelIds.includes(Label.Unread);
+  !message.labelIds.includes(SystemLabelId.Unread);

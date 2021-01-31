@@ -4,7 +4,7 @@ import { useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import fetcher from 'utils/fetcher';
 import { ResponseData } from 'pages/api/email/messages/[id]';
 import { getIsRead } from 'utils/message';
-import { Label } from 'types/message';
+import { SystemLabelId } from 'types/gmail';
 
 interface FetchMessageOptions {
   id: string;
@@ -54,7 +54,7 @@ export const useSetRead = (
       // Could use react-query useMutation for error handling
       await modifyMessage({
         id: messageId,
-        update: { removeLabelIds: [Label.Unread] },
+        update: { removeLabelIds: [SystemLabelId.Unread] },
       });
 
       // Invalidate message list (and refetch if visible)

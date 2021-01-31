@@ -2,12 +2,8 @@ import { getSession } from 'next-auth/client';
 import { gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
 import Debug from 'debug';
-import {
-  getNewsletterLabel,
-  getBaseMessages,
-  getMessage,
-  MessageFormat,
-} from 'utils/gmail';
+import { getNewsletterLabel, getBaseMessages, getMessage } from 'utils/gmail';
+import { MessageFormat } from 'types/gmail';
 import makeCache from 'utils/makeCache';
 
 const debug = Debug('subsmarine:api:email:messages');

@@ -64,9 +64,12 @@ module.exports = {
     },
     {
       // Config files
-      files: ['.eslintrc.js', '*.config.js'],
+      files: ['.eslintrc.js', '*.config.js', 'next.config.js'],
       env: { node: true },
       parserOptions: { sourceType: 'script' },
+      rules: {
+        '@typescript-eslint/no-var-requires': ['off'],
+      },
     },
     {
       // Tests
