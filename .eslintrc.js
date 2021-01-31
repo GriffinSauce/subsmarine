@@ -5,7 +5,6 @@ module.exports = {
     'airbnb-typescript',
     'airbnb/hooks',
     'plugin:@typescript-eslint/recommended',
-    'plugin:tailwind/recommended',
     'plugin:sonarjs/recommended',
     'prettier',
     'prettier/@typescript-eslint',
