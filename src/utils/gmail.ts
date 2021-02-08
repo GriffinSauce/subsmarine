@@ -11,6 +11,13 @@ google.options({
   http2: true,
 });
 
+class GmailAuthenticationError extends Error {}
+
+export const isAuthenticationError = (
+  error: unknown,
+): error is GmailAuthenticationError =>
+  error instanceof GmailAuthenticationError;
+
 export const getGmailClient = ({
   accessToken,
 }: {
@@ -42,9 +49,11 @@ export const getLabels = async ({
       userId: 'me',
     });
     labels = data.labels;
-  } catch (err) {
-    console.error('err', err);
-    throw new Error(`The API returned an error fetching labels: ${err}`);
+  } catch (error) {
+    if (error.code === '401') {
+      throw new GmailAuthenticationError(error.message);
+    }
+    throw new Error(error.message);
   }
 
   return labels;
@@ -57,9 +66,7 @@ export const getNewsletterLabel = async ({
 }): Promise<Label | undefined> => {
   const labels = await getLabels({ accessToken });
 
-  if (!labels.length) {
-    throw new Error('No labels found.');
-  }
+  if (!labels.length) return undefined;
 
   return labels.find((label) => label.name === 'Newsletters');
 };
@@ -86,9 +93,11 @@ export const getBaseMessages = async ({
     messages = data.messages;
     // data.nextPageToken
     // data.resultSizeEstimate
-  } catch (err) {
-    console.error('err', err);
-    throw new Error('No messages found.');
+  } catch (error) {
+    if (error.code === '401') {
+      throw new GmailAuthenticationError(error.message);
+    }
+    throw new Error(error.message);
   }
 
   return messages;
@@ -113,8 +122,11 @@ export const getMessage = async ({
       format,
     });
     message = response.data;
-  } catch (err) {
-    throw new Error(`Error fetching message ${messageId} - ${err.message}`);
+  } catch (error) {
+    if (error.code === '401') {
+      throw new GmailAuthenticationError(error.message);
+    }
+    throw new Error(error.message);
   }
 
   return message;
@@ -137,7 +149,10 @@ export const modifyMessage = async ({
       id: messageId,
       requestBody: update,
     });
-  } catch (err) {
-    throw new Error(`Error fetching message ${messageId} - ${err.message}`);
+  } catch (error) {
+    if (error.code === '401') {
+      throw new GmailAuthenticationError(error.message);
+    }
+    throw new Error(error.message);
   }
 };

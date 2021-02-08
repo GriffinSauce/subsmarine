@@ -1,16 +1,27 @@
 import { getSession } from 'next-auth/client';
 import { gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getMessage, modifyMessage } from 'utils/gmail';
+import { getMessage, modifyMessage, isAuthenticationError } from 'utils/gmail';
 import { MessageFormat } from 'types/gmail';
 import makeCache from 'utils/makeCache';
 import Debug from 'debug';
 
 const debug = Debug('subsmarine:api:email:messages:id');
 
+enum ErrorMessage {
+  Unauthenticated = 'unauthenticated',
+  UnhandledError = 'unhandledError',
+}
+
 export interface ResponseData {
   message: gmail_v1.Schema$Message;
 }
+
+export interface ResponseError {
+  error: ErrorMessage;
+}
+
+type ResponseDataOrError = ResponseData | ResponseError;
 
 interface GetMessageParams {
   userId: string;
@@ -32,12 +43,11 @@ const getMessageCached = makeCache<
 
 const handleGet = async (
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>,
+  res: NextApiResponse<ResponseDataOrError>,
 ): Promise<void> => {
   const session = await getSession({ req });
   if (!session) {
-    // @ts-expect-error - TODO: find typing that works with swr
-    res.status(403).json({ error: 'Not authenticated' });
+    res.status(401).json({ error: ErrorMessage.Unauthenticated });
     return;
   }
 
@@ -49,12 +59,23 @@ const handleGet = async (
 
   debug(`fetching message ${id}`);
 
-  const message = await getMessageCached({
-    userId,
-    accessToken,
-    messageId: `${id}`,
-    format: MessageFormat.Full,
-  });
+  let message;
+  try {
+    message = await getMessageCached({
+      userId,
+      accessToken,
+      messageId: `${id}`,
+      format: MessageFormat.Full,
+    });
+  } catch (error) {
+    if (isAuthenticationError(error)) {
+      res.status(401).json({ error: ErrorMessage.Unauthenticated });
+      return;
+    }
+    console.error(`Error fetching message ${id} - ${error.message}`);
+    res.status(500).json({ error: ErrorMessage.UnhandledError });
+    return;
+  }
 
   debug(`fetched message ${id}`);
 
@@ -63,23 +84,32 @@ const handleGet = async (
 
 const handlePost = async (
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>,
+  res: NextApiResponse<ResponseDataOrError>,
 ): Promise<void> => {
   const session = await getSession({ req });
   if (!session) {
-    // @ts-expect-error - TODO: find typing that works with swr
-    res.status(403).json({ error: 'Not authenticated' });
+    res.status(403).json({ error: ErrorMessage.Unauthenticated });
     return;
   }
 
   const { accessToken } = session;
   const { id } = req.query;
 
-  await modifyMessage({
-    accessToken,
-    messageId: `${id}`,
-    update: req.body,
-  });
+  try {
+    await modifyMessage({
+      accessToken,
+      messageId: `${id}`,
+      update: req.body,
+    });
+  } catch (error) {
+    if (isAuthenticationError(error)) {
+      res.status(401).json({ error: ErrorMessage.Unauthenticated });
+      return;
+    }
+    console.error(`Error modifying message ${id} - ${error.message}`);
+    res.status(500).json({ error: ErrorMessage.UnhandledError });
+    return;
+  }
 
   res.status(204).end();
 };

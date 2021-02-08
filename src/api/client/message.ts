@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/client';
 import { useQuery, useQueryClient, UseQueryOptions } from 'react-query';
 import fetcher from 'utils/fetcher';
-import { ResponseData } from 'pages/api/email/messages/[id]';
+import { ResponseData, ResponseError } from 'pages/api/email/messages/[id]';
 import { getIsRead } from 'utils/message';
 import { SystemLabelId } from 'types/gmail';
 
@@ -23,10 +23,14 @@ export function useMessage(
   const [session] = useSession();
   const isAuthenticated = !!session?.user;
 
-  return useQuery<ResponseData>(['messages', id], () => fetchMessage({ id }), {
-    ...options,
-    enabled: isAuthenticated && options.enabled,
-  });
+  return useQuery<ResponseData, ResponseError>(
+    ['messages', id],
+    () => fetchMessage({ id }),
+    {
+      ...options,
+      enabled: isAuthenticated && options.enabled,
+    },
+  );
 }
 
 interface ModifyMessageOptions {

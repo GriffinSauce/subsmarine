@@ -2,15 +2,32 @@ import { getSession } from 'next-auth/client';
 import { gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
 import Debug from 'debug';
-import { getNewsletterLabel, getBaseMessages, getMessage } from 'utils/gmail';
+import {
+  getNewsletterLabel,
+  getBaseMessages,
+  getMessage,
+  isAuthenticationError,
+} from 'utils/gmail';
 import { MessageFormat } from 'types/gmail';
 import makeCache from 'utils/makeCache';
 
 const debug = Debug('subsmarine:api:email:messages');
 
+enum ErrorMessage {
+  Unauthenticated = 'unauthenticated',
+  UnhandledError = 'unhandledError',
+  LabelNotFound = 'labelNotFound',
+}
+
 export interface ResponseData {
   messages: gmail_v1.Schema$Message[];
 }
+
+export interface ResponseError {
+  error: ErrorMessage;
+}
+
+type ResponseDataOrError = ResponseData | ResponseError;
 
 interface GetNewsletterLabelParams {
   userId: string;
@@ -28,12 +45,11 @@ const getNewsletterLabelCached = makeCache<
 
 export default async (
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>,
+  res: NextApiResponse<ResponseDataOrError>,
 ): Promise<void> => {
   const session = await getSession({ req });
   if (!session) {
-    // @ts-expect-error - TODO: find typing that works with swr
-    res.status(403).json({ error: 'Not authenticated' });
+    res.status(401).json({ error: ErrorMessage.Unauthenticated });
     return;
   }
 
@@ -44,17 +60,42 @@ export default async (
   // @ts-expect-error - user.id is missing on type
   const userId = user.id;
 
-  const newsletterLabel = await getNewsletterLabelCached({
-    userId,
-    accessToken,
-  });
+  let newsletterLabel: gmail_v1.Schema$Label;
+  try {
+    newsletterLabel = await getNewsletterLabelCached({
+      userId,
+      accessToken,
+    });
+  } catch (error) {
+    if (isAuthenticationError(error)) {
+      res.status(401).json({ error: ErrorMessage.Unauthenticated });
+      return;
+    }
+    res.status(500).json({ error: ErrorMessage.UnhandledError });
+    return;
+  }
+  if (!newsletterLabel) {
+    res.status(404).json({ error: ErrorMessage.LabelNotFound });
+    return;
+  }
+
   debug('fetched label', newsletterLabel);
 
-  const messages = await getBaseMessages({
-    accessToken,
-    labelId: newsletterLabel.id,
-    maxResults: 50,
-  });
+  let messages: gmail_v1.Schema$Message[];
+  try {
+    messages = await getBaseMessages({
+      accessToken,
+      labelId: newsletterLabel.id,
+      maxResults: 50,
+    });
+  } catch (error) {
+    if (isAuthenticationError(error)) {
+      res.status(401).json({ error: ErrorMessage.Unauthenticated });
+      return;
+    }
+    res.status(500).json({ error: ErrorMessage.UnhandledError });
+    return;
+  }
   debug('fetched message list');
 
   // Add labels and headers to messages
