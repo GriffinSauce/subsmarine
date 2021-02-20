@@ -2,7 +2,8 @@ import 'tailwindcss/tailwind.css';
 import 'styles/global.css';
 import { AppProps } from 'next/app';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { persistWithLocalStorage } from 'react-query/persist-localstorage-experimental';
+import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
+import { createLocalStoragePersistor } from 'react-query/createLocalStoragePersistor-experimental';
 import Head from 'next/head';
 import { ThemeProvider } from 'next-themes';
 import { Provider as AuthProvider } from 'next-auth/client';
@@ -19,7 +20,11 @@ const queryClient = new QueryClient({
 });
 
 // Successful fetches are cached locally but always revalidated
-persistWithLocalStorage(queryClient);
+const localStoragePersistor = createLocalStoragePersistor();
+persistQueryClient({
+  queryClient,
+  persistor: localStoragePersistor,
+});
 
 // Use the <Provider> to improve performance and allow components that call
 // `useSession()` anywhere in your application to access the `session` object.
