@@ -1,5 +1,5 @@
 import MessageListItem from 'components/MessageListItem';
-import { useMessages } from 'api/client';
+import useMessages from 'hooks/useMessages';
 
 const MessageList: React.FC = () => {
   const { isIdle, isLoading, isError, data } = useMessages();

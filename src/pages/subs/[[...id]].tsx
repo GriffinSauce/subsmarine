@@ -8,8 +8,8 @@ import Layout from 'components/Layout';
 import MessageList from 'components/MessageList';
 import Message from 'components/Message';
 import Button from 'components/Button';
-import useIsMounted from 'utils/useIsMounted';
-import useRedirectUnauthenticated from 'utils/useRedirectUnauthenticated';
+import useIsMounted from 'hooks/useIsMounted';
+import useRedirectUnauthenticated from 'hooks/useRedirectUnauthenticated';
 import { BreakPoints } from 'types/theme';
 
 const Page: NextPage = () => {

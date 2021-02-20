@@ -6,7 +6,7 @@ import Layout from 'components/Layout';
 import Container from 'components/Container';
 import Avatar from 'components/Avatar';
 import Button from 'components/Button';
-import useRedirectUnauthenticated from 'utils/useRedirectUnauthenticated';
+import useRedirectUnauthenticated from 'hooks/useRedirectUnauthenticated';
 
 const Title: React.FC = ({ children }) => (
   <h1 className="flex flex-row items-center justify-start space-x-3 h1">

@@ -1,52 +1,22 @@
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/client';
-import { useQuery, useQueryClient, UseQueryOptions } from 'react-query';
-import fetcher from 'utils/fetcher';
-import { ResponseData, ResponseError } from 'pages/api/email/messages/[id]';
+import { useQueryClient } from 'react-query';
+import { ResponseData } from 'pages/api/email/messages/[id]';
 import { getIsRead } from 'utils/message';
 import { SystemLabelId } from 'types/gmail';
-
-interface FetchMessageOptions {
-  id: string;
-}
-
-export const fetchMessage = ({
-  id,
-}: FetchMessageOptions): Promise<ResponseData> =>
-  fetcher(`/api/email/messages/${id}`);
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function useMessage(
-  { id }: FetchMessageOptions,
-  options: UseQueryOptions<ResponseData> = {},
-) {
-  const [session] = useSession();
-  const isAuthenticated = !!session?.user;
-
-  return useQuery<ResponseData, ResponseError>(
-    ['messages', id],
-    () => fetchMessage({ id }),
-    {
-      ...options,
-      enabled: isAuthenticated && options.enabled,
-    },
-  );
-}
+import fetcher from 'utils/fetcher';
 
 interface ModifyMessageOptions {
   id: string;
   update: Record<string, unknown>;
 }
 
-export const modifyMessage = ({
+const modifyMessage = ({
   id,
   update,
 }: ModifyMessageOptions): Promise<ResponseData> =>
   fetcher(`/api/email/messages/${id}`, { method: 'POST', body: update });
 
-export const useSetRead = (
-  message: ResponseData['message'] | undefined,
-): void => {
+const useSetRead = (message: ResponseData['message'] | undefined): void => {
   const queryClient = useQueryClient();
   const [handledMessage, setHandledMessage] = useState<string | null>(null); // Prevent repeat posts
 
@@ -69,3 +39,5 @@ export const useSetRead = (
     if (message && !isHandled && !getIsRead(message)) setRead(message?.id);
   }, [handledMessage, message, queryClient]);
 };
+
+export default useSetRead;
