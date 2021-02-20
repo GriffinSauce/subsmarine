@@ -31,7 +31,7 @@
     "dompurify": "^2.2.6",
     "googleapis": "^67.1.0",
     "ioredis": "^4.22.0",
-    "next": "^10.0.7",
+    "next": "10.0.5",
     "next-auth": "^3.4.2",
     "next-pwa": "^5.0.5",
     "next-themes": "^0.0.10",
