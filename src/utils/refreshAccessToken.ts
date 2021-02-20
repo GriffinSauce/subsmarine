@@ -1,4 +1,3 @@
-import querystring from 'querystring';
 import { Token } from 'types/auth';
 
 /**
@@ -8,25 +7,28 @@ import { Token } from 'types/auth';
  */
 const refreshAccessToken = async (token: Token): Promise<Token> => {
   try {
-    const query = querystring.stringify({
-      client_id: process.env.GOOGLE_ID,
-      client_secret: process.env.GOOGLE_SECRET,
-      grant_type: 'refresh_token',
-      refresh_token: token.refreshToken,
-    });
-    const url = `https://oauth2.googleapis.com/token?${query}`;
+    const url = `https://oauth2.googleapis.com/token`;
 
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
+      body: new URLSearchParams({
+        client_id: process.env.GOOGLE_ID,
+        client_secret: process.env.GOOGLE_SECRET,
+        grant_type: 'refresh_token',
+        refresh_token: token.refreshToken,
+      }),
       method: 'POST',
     });
 
     const accessToken = await response.json();
 
     if (!response.ok) {
-      throw accessToken;
+      const { error, error_description } = accessToken;
+      if (error || error_description)
+        throw new Error(`${error} - ${error_description}`);
+      throw new Error(`unknown error - ${response.status}`);
     }
 
     // Give a 10 sec buffer
