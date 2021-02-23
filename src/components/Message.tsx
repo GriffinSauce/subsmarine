@@ -23,21 +23,21 @@ const Message: React.FC<Props> = ({ id }) => {
 
   if (isIdle)
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center flex-grow h-full">
         <span>Select a message</span>
       </div>
     );
 
   if (isLoading)
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center flex-grow h-full">
         <Loader />
       </div>
     );
 
   if (isError)
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center flex-grow h-full">
         <span>Sorry, something went wrong.</span>
       </div>
     );

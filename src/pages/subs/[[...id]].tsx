@@ -22,7 +22,7 @@ const Page: NextPage = () => {
 
   return (
     <Layout fullHeight={!isMobile} withFooter={false}>
-      <div className="container flex flex-col min-h-0 px-3 mx-auto space-y-3">
+      <div className="container flex flex-col flex-grow min-h-0 px-3 mx-auto space-y-3">
         <h1 className="flex flex-row items-center justify-start mt-6 space-x-3 h1">
           <Logo className="w-10" />
           <span>Subs</span>
