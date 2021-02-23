@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useMediaQuery } from 'react-responsive';
 import { NextPage } from 'next';
 import { FiChevronLeft } from 'react-icons/fi';
@@ -9,23 +8,17 @@ import MessageList from 'components/MessageList';
 import Message from 'components/Message';
 import Button from 'components/Button';
 import useIsMounted from 'hooks/useIsMounted';
+import useSelectedMessageId from 'hooks/useSelectedMessageId';
 import useRedirectUnauthenticated from 'hooks/useRedirectUnauthenticated';
 import { BreakPoints } from 'types/theme';
 
 const Page: NextPage = () => {
   useRedirectUnauthenticated('/');
 
-  // Next.js does one render with empty params
-  // this triggers a flash of the list on mobile even when a message is selected
-  // TODO: use a hack? https://github.com/vercel/next.js/discussions/11484
-  const router = useRouter();
-  const params = (router.query.id as Array<string>) || []; // Catch-all is array
-  const [id] = params;
+  const messageId = useSelectedMessageId();
 
   const isMobile = useMediaQuery({ maxWidth: BreakPoints.lg });
-
-  // Defer until hyrdated so we know the layout and route params
-  const isMounted = useIsMounted();
+  const isMounted = useIsMounted(); // Defer until hyrdated so we know the layout and route params
 
   return (
     <Layout fullHeight={!isMobile} withFooter={false}>
@@ -39,7 +32,7 @@ const Page: NextPage = () => {
           <>
             {isMobile ? (
               <>
-                {id ? (
+                {messageId ? (
                   <>
                     <Link href="/subs">
                       <a>
@@ -48,7 +41,7 @@ const Page: NextPage = () => {
                         </Button>
                       </a>
                     </Link>
-                    <Message id={id} />
+                    <Message id={messageId} />
                   </>
                 ) : (
                   <div className="min-h-0">
@@ -62,7 +55,7 @@ const Page: NextPage = () => {
                   <MessageList />
                 </div>
                 <div className="w-2/3 min-h-0 overflow-y-scroll border-l border-gray-200">
-                  <Message id={id} />
+                  <Message id={messageId} />
                 </div>
               </div>
             )}
