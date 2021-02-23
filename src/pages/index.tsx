@@ -1,11 +1,11 @@
 import Link from 'next/link';
-import { CgSpinner } from 'react-icons/cg';
 import { NextPage } from 'next';
 import { signIn, useSession } from 'next-auth/client';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
 import Logo from 'components/Logo';
 import Button from 'components/Button';
+import Loader from 'components/Loader';
 import { AuthProviderId } from 'types/auth';
 
 const Page: NextPage = () => {
@@ -22,7 +22,7 @@ const Page: NextPage = () => {
           </p>
 
           {loading ? (
-            <CgSpinner className="inline-block text-3xl text-blue-400 animate-spin" />
+            <Loader />
           ) : (
             <div
               className="mt-6 space-y-6"

@@ -1,4 +1,5 @@
 import MessageBody from 'components/MessageBody';
+import Loader from 'components/Loader';
 import useMessage from 'hooks/useMessage';
 import useSetRead from 'hooks/useSetRead';
 import { getHeaderValue } from 'utils/message';
@@ -20,17 +21,34 @@ const Message: React.FC<Props> = ({ id }) => {
 
   useSetRead(data?.message);
 
-  if (isIdle) return <div>Select a message</div>;
+  if (isIdle)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <span>Select a message</span>
+      </div>
+    );
 
-  if (isLoading) return <div>loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Loader />
+      </div>
+    );
 
-  if (isError) return <div>failed to load</div>;
+  if (isError)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <span>Sorry, something went wrong.</span>
+      </div>
+    );
 
   const { message } = data;
   return (
     <>
-      <h1 className="h2">{getHeaderValue(message, 'Subject')}</h1>
-      <hr className="my-3" />
+      <h1 className="px-6 text-center h2">
+        {getHeaderValue(message, 'Subject')}
+      </h1>
+      <hr className="mt-6" />
       <MessageBody message={message} />
     </>
   );
