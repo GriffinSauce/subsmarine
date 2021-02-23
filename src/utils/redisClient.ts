@@ -17,8 +17,9 @@ const redis = new Redis({
   tls: {},
 });
 
-redis.on('error', (err) => {
-  throw err;
+redis.on('error', (error) => {
+  // Non-critical, just log for now
+  console.error(`Redis connection error - ${error.message}`);
 });
 
 export default redis;
