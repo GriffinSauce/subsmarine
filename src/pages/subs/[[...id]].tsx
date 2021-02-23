@@ -33,16 +33,7 @@ const Page: NextPage = () => {
             {isMobile ? (
               <>
                 {messageId ? (
-                  <>
-                    <Link href="/subs">
-                      <a>
-                        <Button as="span" className="self-start">
-                          <FiChevronLeft /> Back to list
-                        </Button>
-                      </a>
-                    </Link>
-                    <Message id={messageId} />
-                  </>
+                  <Message id={messageId} />
                 ) : (
                   <div className="min-h-0">
                     <MessageList />
