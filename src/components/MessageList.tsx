@@ -1,12 +1,23 @@
 import MessageListItem from 'components/MessageListItem';
+import MessageListItemSkeleton from 'components/MessageListItemSkeleton';
+import Times from 'components/Times';
 import useMessages from 'hooks/useMessages';
 
 const MessageList: React.FC = () => {
   const { isIdle, isLoading, isError, data } = useMessages();
 
-  if (isIdle || isLoading) return <div>loading...</div>;
+  if (isError) return <div>Sorry, something went wrong.</div>;
 
-  if (isError) return <div>failed to load</div>;
+  if (isIdle || isLoading)
+    return (
+      <ul className="space-y-6">
+        <Times length={12}>
+          <li>
+            <MessageListItemSkeleton />
+          </li>
+        </Times>
+      </ul>
+    );
 
   const { messages } = data;
   return (
