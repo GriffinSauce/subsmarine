@@ -1,12 +1,9 @@
-import Link from 'next/link';
 import { useMediaQuery } from 'react-responsive';
 import { NextPage } from 'next';
-import { FiChevronLeft } from 'react-icons/fi';
 import Logo from 'components/Logo';
 import Layout from 'components/Layout';
 import MessageList from 'components/MessageList';
 import Message from 'components/Message';
-import Button from 'components/Button';
 import useIsMounted from 'hooks/useIsMounted';
 import useSelectedMessageId from 'hooks/useSelectedMessageId';
 import useRedirectUnauthenticated from 'hooks/useRedirectUnauthenticated';
@@ -28,7 +25,7 @@ const Page: NextPage = () => {
           <span>Subs</span>
         </h1>
 
-        {isMounted ? (
+        {isMounted && (
           <>
             {isMobile ? (
               <>
@@ -51,8 +48,6 @@ const Page: NextPage = () => {
               </div>
             )}
           </>
-        ) : (
-          <div>loading...</div>
         )}
       </div>
     </Layout>

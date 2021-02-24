@@ -1,3 +1,4 @@
+import { IoReaderOutline } from 'react-icons/io5';
 import MessageBody from 'components/MessageBody';
 import Loader from 'components/Loader';
 import useMessage from 'hooks/useMessage';
@@ -24,7 +25,7 @@ const Message: React.FC<Props> = ({ id }) => {
   if (isIdle)
     return (
       <div className="flex items-center justify-center flex-grow h-full">
-        <span>Select a message</span>
+        <IoReaderOutline className="mb-24 text-gray-200 text-8xl" />
       </div>
     );
 
