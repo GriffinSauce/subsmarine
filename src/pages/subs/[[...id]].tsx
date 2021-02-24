@@ -42,10 +42,10 @@ const Page: NextPage = () => {
               </>
             ) : (
               <div className="flex flex-row min-h-0 -mr-2">
-                <div className="w-1/3 min-h-0 p-2 -ml-2 overflow-y-scroll">
+                <div className="w-1/3 min-h-0 p-2 -ml-2 overflow-y-scroll scrollbar">
                   <MessageList />
                 </div>
-                <div className="w-2/3 min-h-0 overflow-y-scroll border-l border-gray-200">
+                <div className="w-2/3 min-h-0 overflow-y-scroll scrollbar">
                   <Message id={messageId} />
                 </div>
               </div>
