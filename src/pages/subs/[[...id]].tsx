@@ -4,13 +4,20 @@ import Logo from 'components/Logo';
 import Layout from 'components/Layout';
 import MessageList from 'components/MessageList';
 import Message from 'components/Message';
+import LoadingPill from 'components/LoadingPill';
 import useIsMounted from 'hooks/useIsMounted';
+import useRelaxedReset from 'hooks/useRelaxedReset';
 import useSelectedMessageId from 'hooks/useSelectedMessageId';
 import useRedirectUnauthenticated from 'hooks/useRedirectUnauthenticated';
 import { BreakPoints } from 'types/theme';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useMessagesIsFetching } from 'hooks/useMessages';
 
 const Page: NextPage = () => {
   useRedirectUnauthenticated('/');
+
+  const isLoading = useMessagesIsFetching();
+  const showLoading = useRelaxedReset(isLoading, 50);
 
   const messageId = useSelectedMessageId();
 
@@ -50,6 +57,19 @@ const Page: NextPage = () => {
           </>
         )}
       </div>
+
+      <AnimatePresence>
+        {showLoading && (
+          <motion.div
+            className="fixed flex items-center justify-center w-full bottom-20"
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+          >
+            <LoadingPill />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Layout>
   );
 };
