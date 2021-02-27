@@ -14,6 +14,7 @@ function useMessages(options: UseQueryOptions<ResponseData> = {}) {
   return useQuery<ResponseData, ResponseError>('messages', fetchMessages, {
     ...options,
     enabled: isAuthenticated && options.enabled,
+    staleTime: 1000 * 60, // ms
   });
 }
 
