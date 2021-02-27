@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/client';
-import { useQuery, useIsFetching, UseQueryOptions } from 'react-query';
+import { useQuery, UseQueryOptions } from 'react-query';
 import fetcher from 'utils/fetcher';
 import { ResponseData, ResponseError } from 'pages/api/email/messages';
 
@@ -15,11 +15,6 @@ function useMessages(options: UseQueryOptions<ResponseData> = {}) {
     ...options,
     enabled: isAuthenticated && options.enabled,
   });
-}
-
-export function useMessagesIsFetching(): boolean {
-  const count = useIsFetching(['messages']);
-  return !!count;
 }
 
 export default useMessages;
