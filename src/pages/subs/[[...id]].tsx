@@ -35,13 +35,17 @@ const Page: NextPage = () => {
                 ) : (
                   <div className="relative min-h-0">
                     <MessageList />
+                    <MessageListLoader />
                   </div>
                 )}
               </>
             ) : (
-              <div className="relative flex flex-row min-h-0 -mr-2">
-                <div className="w-1/3 min-h-0 p-2 -ml-2 overflow-y-scroll scrollbar">
-                  <MessageList />
+              <div className="flex flex-row min-h-0 -mr-2">
+                <div className="relative w-1/3 min-h-0 -ml-2 overflow-hidden">
+                  <div className="h-full p-2 overflow-y-scroll scrollbar">
+                    <MessageList />
+                  </div>
+                  <MessageListLoader />
                 </div>
                 <div className="w-2/3 min-h-0 overflow-y-scroll scrollbar">
                   <Message id={messageId} />
@@ -50,8 +54,6 @@ const Page: NextPage = () => {
             )}
           </>
         )}
-
-        <MessageListLoader />
       </div>
     </Layout>
   );

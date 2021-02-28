@@ -13,7 +13,7 @@ const MessageListLoader: React.FC = () => {
     <AnimatePresence>
       {showLoading && (
         <motion.div
-          className="fixed left-0 right-0 flex items-center justify-center bottom-20"
+          className="absolute left-0 right-0 flex items-center justify-center bottom-10 lg:bottom-4"
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 100 }}
