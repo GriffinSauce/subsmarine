@@ -5,7 +5,6 @@ import Layout from 'components/Layout';
 import MessageList from 'components/MessageList';
 import Message from 'components/Message';
 import MessageListLoader from 'components/MessageListLoader';
-import ThemeToggle from 'components/ThemeToggle';
 import useIsMounted from 'hooks/useIsMounted';
 import useSelectedMessageId from 'hooks/useSelectedMessageId';
 import useRedirectUnauthenticated from 'hooks/useRedirectUnauthenticated';
@@ -25,7 +24,6 @@ const Page: NextPage = () => {
         <h1 className="flex flex-row items-center justify-start mt-6 space-x-3 h1">
           <Logo className="w-10" />
           <span>Subs</span>
-          <ThemeToggle />
         </h1>
 
         {isMounted && (

@@ -14,7 +14,7 @@ const ThemeToggle: React.FC = () => {
 
   if (!isMounted) return null;
   return (
-    <div className="flex items-center justify-center space-x-1 text-sm dark:text-gray-50">
+    <div className="inline-flex items-center justify-center space-x-1 text-sm dark:text-gray-50">
       <FiSun />
       <select
         className="p-1 font-semibold border border-gray-300 rounded dark:bg-gray-900 dark:border-gray-700"
