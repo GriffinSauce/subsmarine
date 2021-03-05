@@ -15,8 +15,8 @@ const TabNavigation: React.FC = () => {
   return (
     <div className="lg:hidden">
       <FixedPlaceholder />
-      <div className="fixed bottom-0 w-full bg-white">
-        <hr />
+      <div className="fixed bottom-0 w-full bg-white dark:bg-gray-800">
+        <hr className="dark:border-gray-700" />
         <ul className="grid grid-cols-2">
           <li>
             <Link href="/subs">
@@ -29,15 +29,19 @@ const TabNavigation: React.FC = () => {
                 >
                   <Logo className="w-3/4" />
                 </div>
-                <span className="font-semibold text-gray-500">Subs</span>
+                <span className="font-semibold text-gray-500 dark:text-gray-50">
+                  Subs
+                </span>
               </a>
             </Link>
           </li>
-          <li className="border-l border-gray-100">
+          <li className="border-l border-gray-100 dark:border-gray-700">
             <Link href="/profile">
               <a className="flex items-center justify-center h-full p-3 space-x-2">
                 <Avatar className={iconSize} />
-                <span className="font-semibold text-gray-500">Profile</span>
+                <span className="font-semibold text-gray-500 dark:text-gray-50">
+                  Profile
+                </span>
               </a>
             </Link>
           </li>

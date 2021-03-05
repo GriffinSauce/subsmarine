@@ -7,11 +7,20 @@ import Logo from 'components/Logo';
 import Avatar from 'components/Avatar';
 import { AuthProviderId } from 'types/auth';
 
+type AnchorProps = React.HTMLProps<HTMLLinkElement>;
+const HeaderLink: React.FC<AnchorProps> = ({ children }) => {
+  return (
+    <a className="flex items-center justify-center px-4 py-3 space-x-2 text-lg font-semibold bg-white dark:bg-gray-800 rounded-xl">
+      {children}
+    </a>
+  );
+};
+
 const ProfileLink = () => {
   const [session] = useSession();
   return (
     <Link href="/profile">
-      <a className="flex items-center px-4 py-3 space-x-3 leading-none bg-white rounded-xl">
+      <a className="flex items-center px-4 py-3 space-x-3 leading-none bg-white dark:bg-gray-800 rounded-xl">
         <Avatar className="w-8 h-8" />
         <div>
           <small>
@@ -27,8 +36,7 @@ const ProfileLink = () => {
 
 const SignupLink = () => (
   <Link href="/profile">
-    <a
-      className="flex items-center justify-center px-4 py-3 space-x-2 text-lg font-semibold bg-white rounded-xl"
+    <HeaderLink
       href="/api/auth/signin/Google"
       onClick={(e) => {
         e.preventDefault();
@@ -37,7 +45,7 @@ const SignupLink = () => (
     >
       <FiZap />
       <span>Get started</span>
-    </a>
+    </HeaderLink>
   </Link>
 );
 
@@ -45,24 +53,24 @@ const Header: React.FC = () => {
   const [session, loading] = useSession();
 
   return (
-    <header className="hidden py-2 bg-gray-100 border-b border-gray-200 lg:block">
+    <header className="hidden py-2 bg-gray-100 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900 lg:block">
       <Container>
         <nav>
           <ul className="flex flex-row items-center justify-between w-full space-x-3">
             <li>
               <Link href="/">
-                <a className="flex items-center justify-center px-4 py-3 space-x-2 text-lg font-semibold bg-white rounded-xl">
+                <HeaderLink>
                   <Logo className="h-6" />
                   <span>Subsmarine</span>
-                </a>
+                </HeaderLink>
               </Link>
             </li>
             <li>
               <Link href="/subs">
-                <a className="flex items-center justify-center px-4 py-3 space-x-2 text-lg font-semibold bg-white rounded-xl">
+                <HeaderLink>
                   <FiLayers />
                   <span>Subs</span>
-                </a>
+                </HeaderLink>
               </Link>
             </li>
             <li className="flex justify-end flex-grow">
