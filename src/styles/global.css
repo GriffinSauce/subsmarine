@@ -3,9 +3,9 @@ body {
   @apply bg-gray-50 dark:bg-gray-900;
 }
 
-html {
+body {
   font-size: 15px;
-  @apply text-gray-800;
+  @apply text-gray-800 dark:text-gray-300;
 }
 
 .h1,
@@ -42,9 +42,9 @@ html {
 
 .scrollbar::-webkit-scrollbar,
 .scrollbar::-webkit-scrollbar-track {
-  @apply bg-gray-100 rounded-full;
+  @apply bg-gray-100 rounded-full dark:bg-gray-800;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full;
+  @apply bg-gray-300 rounded-full dark:bg-gray-600;
 }

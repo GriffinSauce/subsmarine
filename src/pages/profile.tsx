@@ -31,7 +31,7 @@ const Profile = () => {
   return (
     <>
       <Title>Your profile</Title>
-      <div className="flex items-center p-3 space-x-3 leading-none bg-gray-200 rounded-md">
+      <div className="flex items-center p-3 space-x-3 leading-none bg-gray-200 rounded-md dark:bg-blue-900">
         <Avatar />
         <div>
           <strong>{session.user.name}</strong>
