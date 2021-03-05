@@ -11,6 +11,13 @@ const scopes = [
   'https://www.googleapis.com/auth/gmail.modify',
 ];
 
+const urlParams = new URLSearchParams({
+  prompt: 'consent',
+  access_type: 'offline',
+  response_type: 'code',
+});
+const GOOGLE_AUTHORIZATION_URL = `https://accounts.google.com/o/oauth2/v2/auth?${urlParams}`;
+
 // For more information on each option (and a full list of options) go to
 // https://next-auth.js.org/configuration/options
 const options = {
@@ -23,8 +30,7 @@ const options = {
 
       // https://github.com/nextauthjs/next-auth/issues/408
       // https://github.com/nextauthjs/next-auth/issues/269
-      authorizationUrl:
-        'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code',
+      authorizationUrl: GOOGLE_AUTHORIZATION_URL,
       accessTokenUrl: 'https://oauth2.googleapis.com/token',
     }),
   ],
@@ -90,8 +96,17 @@ const options = {
     // signIn: async (user, account, profile) => { return Promise.resolve(true) },
     // redirect: async (url, baseUrl) => { return Promise.resolve(baseUrl) },
 
-    session: async (_, token) => {
-      return token;
+    async session(session, token) {
+      if (token) {
+        return {
+          ...session,
+          user: token.user,
+          accessToken: token.accessToken,
+          error: token.error,
+        };
+      }
+
+      return session;
     },
 
     jwt: async (prevToken: Token, account, profile): Promise<Token> => {
@@ -99,14 +114,14 @@ const options = {
       if (account && profile) {
         const {
           accessToken,
-          accessTokenExpires,
-          refreshToken,
+          expires_in, // eslint-disable-line @typescript-eslint/naming-convention
+          refresh_token, // eslint-disable-line @typescript-eslint/naming-convention
           ...restProfile
         } = profile;
         return {
           accessToken,
-          accessTokenExpires,
-          refreshToken: refreshToken || prevToken.refreshToken,
+          accessTokenExpires: Date.now() + expires_in * 1000,
+          refreshToken: refresh_token,
           user: {
             ...restProfile,
             ...account,

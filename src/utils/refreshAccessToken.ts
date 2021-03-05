@@ -1,4 +1,7 @@
 import { Token } from 'types/auth';
+import Debug from 'debug';
+
+const debug = Debug('subsmarine:auth');
 
 /**
  * Takes a token, and returns a new token with updated
@@ -6,41 +9,42 @@ import { Token } from 'types/auth';
  * returns the old token and an error property
  */
 const refreshAccessToken = async (token: Token): Promise<Token> => {
+  debug('refreshing access token');
   try {
-    const url = `https://oauth2.googleapis.com/token`;
+    const urlParams = new URLSearchParams({
+      client_id: process.env.GOOGLE_ID,
+      client_secret: process.env.GOOGLE_SECRET,
+      grant_type: 'refresh_token',
+      refresh_token: token.refreshToken,
+    });
+    const url = `https://oauth2.googleapis.com/token?${urlParams}`;
 
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({
-        client_id: process.env.GOOGLE_ID,
-        client_secret: process.env.GOOGLE_SECRET,
-        grant_type: 'refresh_token',
-        refresh_token: token.refreshToken,
-      }),
       method: 'POST',
     });
 
-    const accessToken = await response.json();
+    const refreshedTokens = await response.json();
 
     if (!response.ok) {
-      const { error, error_description } = accessToken;
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { error, error_description } = refreshedTokens;
       if (error || error_description)
         throw new Error(`${error} - ${error_description}`);
       throw new Error(`unknown error - ${response.status}`);
     }
 
     // Give a 10 sec buffer
-    const now = new Date();
-    const accessTokenExpires = now.setSeconds(
-      now.getSeconds() + accessToken.expires_in - 10,
-    );
+    const expiresInSeconds = refreshedTokens.expires_in - 10;
+    const accessTokenExpires = Date.now() + expiresInSeconds * 1000;
 
     return {
       ...token,
-      accessToken: accessToken.access_token,
+      accessToken: refreshedTokens.access_token,
       accessTokenExpires,
+      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
       error: null,
     };
   } catch (error) {
