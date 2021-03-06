@@ -17,7 +17,7 @@ const Layout: React.FC<Props> = ({
     <div
       className={mergeClasses(
         'flex flex-col',
-        fullHeight ? 'max-h-screen' : 'min-h-screen',
+        fullHeight ? 'min-h-screen lg:max-h-screen' : 'min-h-screen',
       )}
     >
       <Header />
