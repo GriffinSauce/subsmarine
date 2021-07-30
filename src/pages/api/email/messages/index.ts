@@ -1,4 +1,4 @@
-import { getSession } from 'next-auth/client';
+import { getSession } from '@auth0/nextjs-auth0';
 import { gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
 import Debug from 'debug';
@@ -10,6 +10,7 @@ import {
 } from 'utils/gmail';
 import { MessageFormat } from 'types/gmail';
 import makeCache from 'utils/makeCache';
+import { getUserProviderAccessToken } from 'utils/auth0ManagementApi';
 
 const debug = Debug('subsmarine:api:email:messages');
 
@@ -47,7 +48,7 @@ export default async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseDataOrError>,
 ): Promise<void> => {
-  const session = await getSession({ req });
+  const session = await getSession(req, res);
   if (!session) {
     res.status(401).json({ error: ErrorMessage.Unauthenticated });
     return;
@@ -55,10 +56,11 @@ export default async (
 
   debug('fetching messages');
 
-  const { accessToken, user } = session;
+  const { user } = session;
+  const userId = user.sub;
 
-  // @ts-expect-error - user.id is missing on type
-  const userId = user.id;
+  // TODO: error handling
+  const { accessToken } = await getUserProviderAccessToken({ userId });
 
   let newsletterLabel: gmail_v1.Schema$Label;
   try {

@@ -1,10 +1,11 @@
-import { getSession } from 'next-auth/client';
+import { getSession } from '@auth0/nextjs-auth0';
 import { gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getMessage, modifyMessage, isAuthenticationError } from 'utils/gmail';
 import { MessageFormat } from 'types/gmail';
 import makeCache from 'utils/makeCache';
 import Debug from 'debug';
+import { getUserProviderAccessToken } from 'utils/auth0ManagementApi';
 
 const debug = Debug('subsmarine:api:email:messages:id');
 
@@ -45,16 +46,18 @@ const handleGet = async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseDataOrError>,
 ): Promise<void> => {
-  const session = await getSession({ req });
+  const session = await getSession(req, res);
   if (!session) {
     res.status(401).json({ error: ErrorMessage.Unauthenticated });
     return;
   }
 
-  const { accessToken, user } = session;
+  const { user } = session;
+  const userId = user.sub;
 
-  // @ts-expect-error - user.id is missing on type
-  const userId = user.id;
+  // TODO: error handling
+  const { accessToken } = await getUserProviderAccessToken({ userId });
+
   const { id } = req.query;
 
   debug(`fetching message ${id}`);
@@ -86,13 +89,18 @@ const handlePost = async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseDataOrError>,
 ): Promise<void> => {
-  const session = await getSession({ req });
+  const session = await getSession(req, res);
   if (!session) {
     res.status(403).json({ error: ErrorMessage.Unauthenticated });
     return;
   }
 
-  const { accessToken } = session;
+  const { user } = session;
+  const userId = user.sub;
+
+  // TODO: error handling
+  const { accessToken } = await getUserProviderAccessToken({ userId });
+
   const { id } = req.query;
 
   try {

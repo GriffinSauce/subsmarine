@@ -1,3 +1,5 @@
+// TODO: clean up after auth0
+
 export interface Token {
   accessToken: string;
   accessTokenExpires: number | null;

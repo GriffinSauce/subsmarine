@@ -23,7 +23,8 @@ async function fetcher<T>(url: string, options: Options = {}): Promise<T> {
     ...(body ? { body: JSON.stringify(body) } : {}),
   });
   const data = await (response.status === 204 ? null : response.json());
-  if (data?.error) throw new Error(data.error);
+  if (data?.error)
+    throw new Error(`${data.error}${data.message ? ` - ${data.message}` : ''}`);
   return data as T;
 }
 

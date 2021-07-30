@@ -1,7 +1,7 @@
-import { useSession } from 'next-auth/client';
 import { useQuery, UseQueryOptions } from 'react-query';
 import { ResponseData, ResponseError } from 'pages/api/email/messages/[id]';
 import fetcher from 'utils/fetcher';
+import { useUser } from '@auth0/nextjs-auth0';
 
 interface FetchMessageOptions {
   id: string;
@@ -15,8 +15,8 @@ function useMessage(
   { id }: FetchMessageOptions,
   options: UseQueryOptions<ResponseData> = {},
 ) {
-  const [session] = useSession();
-  const isAuthenticated = !!session?.user;
+  const { user } = useUser();
+  const isAuthenticated = !!user;
 
   return useQuery<ResponseData, ResponseError>(
     ['messages', id],
