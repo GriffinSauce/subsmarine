@@ -42,11 +42,17 @@ export const getUserProviderAccessToken = async ({
 }) => {
   const user = await getUserProfile({ userId });
 
-  const {
-    access_token: accessToken,
-    refresh_token: refreshToken,
-    expires_in: expiresIn,
-  } = user.identities[0];
+  const googleAuthKey = 'google-oauth2';
+  const googleAuthData = user.identities.find(
+    (identity) => identity.connection === googleAuthKey,
+  );
+
+  const { access_token: accessToken, expires_in: expiresIn } = googleAuthData;
+
+  // From last authentication or previously saved in meta
+  // Google only sends the refresh token at the first(?) login
+  const refreshToken =
+    googleAuthData.refresh_token || user.user_metadata.refreshToken;
 
   return {
     accessToken,
