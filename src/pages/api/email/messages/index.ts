@@ -10,7 +10,7 @@ import {
 } from 'utils/gmail';
 import { MessageFormat } from 'types/gmail';
 import makeCache from 'utils/makeCache';
-import { getUserProviderAccessToken } from 'utils/auth0ManagementApi';
+import { getUserGoogleAccessToken } from 'utils/auth';
 
 const debug = Debug('subsmarine:api:email:messages');
 
@@ -60,7 +60,7 @@ export default async (
   const userId = user.sub;
 
   // TODO: error handling
-  const { accessToken } = await getUserProviderAccessToken({ userId });
+  const { accessToken } = await getUserGoogleAccessToken({ userId });
 
   let newsletterLabel: gmail_v1.Schema$Label;
   try {

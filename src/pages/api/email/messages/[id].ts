@@ -5,7 +5,7 @@ import { getMessage, modifyMessage, isAuthenticationError } from 'utils/gmail';
 import { MessageFormat } from 'types/gmail';
 import makeCache from 'utils/makeCache';
 import Debug from 'debug';
-import { getUserProviderAccessToken } from 'utils/auth0ManagementApi';
+import { getUserGoogleAccessToken } from 'utils/auth';
 
 const debug = Debug('subsmarine:api:email:messages:id');
 
@@ -56,7 +56,7 @@ const handleGet = async (
   const userId = user.sub;
 
   // TODO: error handling
-  const { accessToken } = await getUserProviderAccessToken({ userId });
+  const { accessToken } = await getUserGoogleAccessToken({ userId });
 
   const { id } = req.query;
 
@@ -99,7 +99,7 @@ const handlePost = async (
   const userId = user.sub;
 
   // TODO: error handling
-  const { accessToken } = await getUserProviderAccessToken({ userId });
+  const { accessToken } = await getUserGoogleAccessToken({ userId });
 
   const { id } = req.query;
 

@@ -1,21 +1,22 @@
-import { Token } from 'types/auth';
+import { addSeconds } from 'date-fns';
 import Debug from 'debug';
+import { TokenEntity } from '.';
 
 const debug = Debug('subsmarine:auth');
 
 /**
- * Takes a token, and returns a new token with updated
- * `accessToken` and `accessTokenExpires`. If an error occurs,
- * returns the old token and an error property
+ * Takes a token entity and returns an updated `accessToken` and `expiresIn`.
  */
-const refreshAccessToken = async (token: Token): Promise<Token> => {
+const refreshAccessToken = async ({
+  refreshToken,
+}: TokenEntity): Promise<TokenEntity> => {
   debug('refreshing access token');
   try {
     const urlParams = new URLSearchParams({
       client_id: process.env.GOOGLE_ID,
       client_secret: process.env.GOOGLE_SECRET,
       grant_type: 'refresh_token',
-      refresh_token: token.refreshToken,
+      refresh_token: refreshToken,
     });
     const url = `https://oauth2.googleapis.com/token?${urlParams}`;
 
@@ -38,21 +39,18 @@ const refreshAccessToken = async (token: Token): Promise<Token> => {
 
     // Give a 10 sec buffer
     const expiresInSeconds = refreshedTokens.expires_in - 10;
-    const accessTokenExpires = Date.now() + expiresInSeconds * 1000;
+    const expiresAtDate = addSeconds(new Date(), expiresInSeconds);
 
     return {
-      ...token,
       accessToken: refreshedTokens.access_token,
-      accessTokenExpires,
-      refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
-      error: null,
+      expiresIn: expiresInSeconds,
+      expiresAt: expiresAtDate.toISOString(),
+      refreshToken: refreshedTokens.refresh_token ?? refreshToken, // Fall back to old refresh token
     };
   } catch (error) {
     console.error(`Error refreshing accesstoken: ${error.message}`);
-    return {
-      ...token,
-      error: 'RefreshAccessTokenError',
-    };
+
+    throw new Error(`RefreshAccessTokenError - ${error.message}`);
   }
 };
 
