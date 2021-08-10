@@ -1,6 +1,6 @@
 import { addSeconds } from 'date-fns';
 import Debug from 'debug';
-import { TokenEntity } from '.';
+import { TokenEntity } from 'types/auth';
 
 const debug = Debug('subsmarine:auth');
 
@@ -28,24 +28,27 @@ const refreshAccessToken = async ({
     });
 
     const refreshedTokens = await response.json();
+    const {
+      error,
+      error_description: errorDescription,
+      refresh_token: newRefreshToken,
+      access_token: accessToken,
+      expires_in: expiresIn,
+    } = refreshedTokens;
 
     if (!response.ok) {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const { error, error_description } = refreshedTokens;
-      if (error || error_description)
-        throw new Error(`${error} - ${error_description}`);
+      if (error || errorDescription)
+        throw new Error(`${error} - ${errorDescription}`);
       throw new Error(`unknown error - ${response.status}`);
     }
 
-    // Give a 10 sec buffer
-    const expiresInSeconds = refreshedTokens.expires_in - 10;
+    const expiresInSeconds = expiresIn - 10; // Give a 10 sec buffer
     const expiresAtDate = addSeconds(new Date(), expiresInSeconds);
 
     return {
-      accessToken: refreshedTokens.access_token,
-      expiresIn: expiresInSeconds,
+      accessToken,
       expiresAt: expiresAtDate.toISOString(),
-      refreshToken: refreshedTokens.refresh_token ?? refreshToken, // Fall back to old refresh token
+      refreshToken: newRefreshToken ?? refreshToken, // Fall back to old refresh token
     };
   } catch (error) {
     console.error(`Error refreshing accesstoken: ${error.message}`);
