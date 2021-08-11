@@ -1,11 +1,10 @@
 import Link from 'next/link';
-import { useSession, signIn } from 'next-auth/client';
+import { useUser } from '@auth0/nextjs-auth0';
 import { FiLayers, FiZap } from 'react-icons/fi';
 import Skeleton from 'react-loading-skeleton';
 import Container from 'components/Container';
 import Logo from 'components/Logo';
 import Avatar from 'components/Avatar';
-import { AuthProviderId } from 'types/auth';
 
 type AnchorProps = React.HTMLProps<HTMLLinkElement>;
 const HeaderLink: React.FC<AnchorProps> = ({ children }) => {
@@ -17,17 +16,16 @@ const HeaderLink: React.FC<AnchorProps> = ({ children }) => {
 };
 
 const ProfileLink = () => {
-  const [session] = useSession();
+  const { user } = useUser();
+
   return (
     <Link href="/profile">
       <a className="flex items-center px-4 py-3 space-x-3 leading-none bg-white dark:bg-gray-800 rounded-xl">
         <Avatar className="w-8 h-8" />
         <div>
-          <small>
-            {session?.user ? 'Signed in as' : <Skeleton width={100} />}
-          </small>
+          <small>{user ? 'Signed in as' : <Skeleton width={100} />}</small>
           <br />
-          <strong>{session?.user?.name || <Skeleton width={120} />}</strong>
+          <strong>{user?.name || <Skeleton width={120} />}</strong>
         </div>
       </a>
     </Link>
@@ -36,13 +34,7 @@ const ProfileLink = () => {
 
 const SignupLink = () => (
   <Link href="/profile">
-    <HeaderLink
-      href="/api/auth/signin/Google"
-      onClick={(e) => {
-        e.preventDefault();
-        signIn(AuthProviderId.Google);
-      }}
-    >
+    <HeaderLink href="/api/auth/login">
       <FiZap />
       <span>Get started</span>
     </HeaderLink>
@@ -50,7 +42,7 @@ const SignupLink = () => (
 );
 
 const Header: React.FC = () => {
-  const [session, loading] = useSession();
+  const { user, isLoading } = useUser();
 
   return (
     <header className="hidden py-2 bg-gray-100 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900 lg:block">
@@ -74,7 +66,7 @@ const Header: React.FC = () => {
               </Link>
             </li>
             <li className="flex justify-end flex-grow">
-              {loading || session ? <ProfileLink /> : <SignupLink />}
+              {isLoading || user ? <ProfileLink /> : <SignupLink />}
             </li>
           </ul>
         </nav>

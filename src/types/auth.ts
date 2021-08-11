@@ -1,11 +1,5 @@
-export interface Token {
+export interface TokenEntity {
   accessToken: string;
-  accessTokenExpires: number | null;
+  expiresAt: string; // ISO date
   refreshToken: string;
-  user: Record<string, unknown>;
-  error?: string;
-}
-
-export enum AuthProviderId {
-  Google = 'google',
 }

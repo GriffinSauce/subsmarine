@@ -1,4 +1,4 @@
-import { signOut, useSession } from 'next-auth/client';
+import { useUser } from '@auth0/nextjs-auth0';
 import { NextPage } from 'next';
 import Skeleton from 'react-loading-skeleton';
 import { FiUser } from 'react-icons/fi';
@@ -28,7 +28,7 @@ const ProfileSkeleton = () => (
 );
 
 const Profile = () => {
-  const [session] = useSession();
+  const { user } = useUser();
   return (
     <>
       <Title>Your profile</Title>
@@ -38,9 +38,9 @@ const Profile = () => {
         <div className="flex items-center p-3 space-x-3 leading-none bg-gray-200 rounded-md dark:bg-blue-900">
           <Avatar />
           <div>
-            <strong>{session.user.name}</strong>
+            <strong>{user.name}</strong>
             <br />
-            <small>{session.user.email}</small>
+            <small>{user.email}</small>
           </div>
         </div>
       </section>
@@ -55,13 +55,7 @@ const Profile = () => {
       </section>
 
       <section>
-        <a
-          href="/api/auth/signout"
-          onClick={(e) => {
-            e.preventDefault();
-            signOut();
-          }}
-        >
+        <a href="/api/auth/logout">
           <Button as="span">Sign out</Button>
         </a>
       </section>
@@ -72,13 +66,13 @@ const Profile = () => {
 const Page: NextPage = () => {
   useRedirectUnauthenticated('/');
 
-  const [session] = useSession();
+  const { user } = useUser();
 
   return (
     <Layout>
       <Container>
         <div className="mt-6 space-y-12">
-          {session ? <Profile /> : <ProfileSkeleton />}
+          {user ? <Profile /> : <ProfileSkeleton />}
         </div>
       </Container>
     </Layout>

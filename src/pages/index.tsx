@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import { NextPage } from 'next';
-import { signIn, useSession } from 'next-auth/client';
+import { useUser } from '@auth0/nextjs-auth0';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
 import Logo from 'components/Logo';
 import Button from 'components/Button';
 import Loader from 'components/Loader';
-import { AuthProviderId } from 'types/auth';
 
 const Page: NextPage = () => {
-  const [session, loading] = useSession();
+  // TODO: error handling
+  const { user, error, isLoading } = useUser();
 
   return (
     <Layout>
@@ -21,14 +21,14 @@ const Page: NextPage = () => {
             Ahoy! Subsmarine surfaces your email newsletters for easy reading.
           </p>
 
-          {loading ? (
+          {isLoading ? (
             <Loader />
           ) : (
             <div
               className="mt-6 space-y-6"
-              style={{ opacity: loading ? 0 : 1 }}
+              style={{ opacity: isLoading ? 0 : 1 }}
             >
-              {session ? (
+              {user ? (
                 <>
                   <p>
                     <Link href="/subs">
@@ -46,13 +46,7 @@ const Page: NextPage = () => {
                     Sign in to get started.
                   </p>
                   <p>
-                    <a
-                      href="/api/auth/signin/Google"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        signIn(AuthProviderId.Google);
-                      }}
-                    >
+                    <a href="/api/auth/login">
                       <Button as="span">Sign in</Button>
                     </a>
                   </p>
