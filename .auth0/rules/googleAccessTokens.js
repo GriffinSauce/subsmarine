@@ -16,7 +16,7 @@ function googleAccessTokens(user, context, callback) {
     expires_in: expiresIn,
   } = googleAuthData;
 
-  const createdDate = new Date(user.last_login);
+  const createdDate = new Date();
   const expiresAtDate = new Date(createdDate.getTime() + expiresIn * 1000);
 
   if (refreshToken) {
