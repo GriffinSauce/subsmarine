@@ -4,7 +4,7 @@
  *
  * Also move access token and expires here so we can manage them from a single place (and refresh them)
  */
-function googleRefreshToken(user, context, callback) {
+function googleAccessTokens(user, context, callback) {
   const googleAuthKey = 'google-oauth2';
   const googleAuthData = user.identities.find(
     (identity) => identity.connection === googleAuthKey,
@@ -17,7 +17,7 @@ function googleRefreshToken(user, context, callback) {
   } = googleAuthData;
 
   const createdDate = new Date(user.last_login);
-  const expiresAtDate = new Date(timeObject.getTime() + expiresIn * 1000);
+  const expiresAtDate = new Date(createdDate.getTime() + expiresIn * 1000);
 
   if (refreshToken) {
     user.user_metadata = user.user_metadata || {};
