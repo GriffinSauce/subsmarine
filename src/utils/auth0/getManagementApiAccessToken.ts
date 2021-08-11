@@ -4,6 +4,8 @@ import Debug from 'debug';
 
 const debug = Debug('subsmarine:auth');
 
+const env = process.env.VERCEL_ENV || 'local';
+
 interface ApiAccesTokenResponse {
   access_token: string;
   token_type: 'Bearer';
@@ -34,7 +36,7 @@ const getAuth0ManagementApiAccessTokenCached = makeCache<
   void,
   ReturnType<typeof fetchAuth0ManagementApiAccessToken>
 >({
-  generateKey: () => `system:auth0:accessToken`,
+  generateKey: () => `system:${env}:auth0:accessToken`,
   fetchFreshValue: fetchAuth0ManagementApiAccessToken,
   ttl: 60 * 60 * 24, // 24 hours
 });
