@@ -1,5 +1,5 @@
 import Debug from 'debug';
-import { differenceInSeconds } from 'date-fns';
+import { isPast } from 'date-fns';
 import refreshAccessToken from './refreshAccessToken';
 import getGoogleAccessToken from '../auth0/getGoogleAccessToken';
 import setGoogleAccessToken from '../auth0/setGoogleRefreshToken';
@@ -22,8 +22,7 @@ export const getUserGoogleAccessToken = async ({
     userId,
   });
 
-  const expiryDate = new Date(tokenEntity.expiresAt);
-  const isExpired = differenceInSeconds(expiryDate, new Date()) < 0;
+  const isExpired = isPast(new Date(tokenEntity.expiresAt));
 
   if (!isExpired) return tokenEntity;
 
