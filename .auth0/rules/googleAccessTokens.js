@@ -16,27 +16,26 @@ function googleAccessTokens(user, context, callback) {
     expires_in: expiresIn,
   } = googleAuthData;
 
+  // Metadata object doesn't exist by default
+  user.user_metadata = user.user_metadata || {};
+
+  const currentTokenEntity = user.user_metadata.tokenEntity || {};
   const createdDate = new Date();
   const expiresAtDate = new Date(createdDate.getTime() + expiresIn * 1000);
 
-  if (refreshToken) {
-    user.user_metadata = user.user_metadata || {};
-    user.user_metadata.tokenEntity = {
-      refreshToken,
-      accessToken,
-      expiresAt: expiresAtDate.toISOString(),
-    };
+  // Only overwrite refreshToken when it exists, always set latest access token & expiration date
+  user.user_metadata.tokenEntity = {
+    refreshToken: refreshToken || currentTokenEntity.refreshToken,
+    accessToken: accessToken,
+    expiresAt: expiresAtDate.toISOString(),
+  };
 
-    // persist the user_metadata update
-    return auth0.users
-      .updateUserMetadata(user.user_id, user.user_metadata)
-      .then(() => {
-        callback(null, user, context);
-      })
-      .catch((err) => {
-        callback(err);
-      });
-  }
-
-  callback(null, user, context);
+  return auth0.users
+    .updateUserMetadata(user.user_id, user.user_metadata)
+    .then(() => {
+      callback(null, user, context);
+    })
+    .catch((err) => {
+      callback(err);
+    });
 }
