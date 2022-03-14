@@ -1,6 +1,6 @@
 import { useUser } from '@auth0/nextjs-auth0';
 import { FiUser } from 'react-icons/fi';
-import mergeClasses from 'utils/mergeClasses';
+import tailshake from 'tailshake';
 
 interface Props {
   className?: string;
@@ -17,13 +17,13 @@ const Avatar: React.FC<Props> = ({ className }) => {
         style={{
           backgroundImage: `url(${user.picture})`,
         }}
-        className={mergeClasses(baseClasses, 'bg-cover', className)}
+        className={tailshake(baseClasses, 'bg-cover', className)}
       />
     );
 
   return (
     <div
-      className={mergeClasses(
+      className={tailshake(
         baseClasses,
         'flex items-center justify-center',
         className,

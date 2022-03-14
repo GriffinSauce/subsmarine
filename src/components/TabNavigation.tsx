@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Avatar from 'components/Avatar';
 import Logo from 'components/Logo';
-import mergeClasses from 'utils/mergeClasses';
+import tailshake from 'tailshake';
 
 const iconSize = 'w-8 h-8';
 
@@ -22,7 +22,7 @@ const TabNavigation: React.FC = () => {
             <Link href="/subs">
               <a className="flex items-center justify-center h-full p-3 space-x-2">
                 <div
-                  className={mergeClasses(
+                  className={tailshake(
                     iconSize,
                     'flex items-center justify-center bg-blue-100 bg-cover rounded-full',
                   )}
@@ -47,8 +47,45 @@ const TabNavigation: React.FC = () => {
           </li>
         </ul>
       </div>
+
+      <div className="relative inline-flex justify-center px-0 py-3 m-0 border-none rounded-none outline-none cursor-pointer bg-none font-default color-blue-500">
+        {/* content */}
+      </div>
     </div>
   );
 };
+
+const tabStyles = ({ theme }) => css`
+  transition: box-shadow 0.2s ease-in-out;
+  transition: color 0.2s ease-in-out;
+  flex: 2;
+
+  &:hover {
+    background-color: ${theme.colors.tabBg};
+    border-radius: 0;
+  }
+  padding: ${theme.layout.spacing.s500}px 0;
+  text-transform: none;
+  font-weight: ${theme.fonts.weight.lg};
+  font-size: ${theme.fonts.size.md};
+  line-height: ${theme.fonts.lineHeight.lg};
+
+  border-left: solid 1px ${theme.colors.tabBorder};
+  :first-of-type {
+    border-left: none;
+  }
+  ${mq.tabletSm(css`
+    flex: none;
+    margin-right: ${theme.layout.spacing.s600}px;
+    justify-content: unset;
+    font-weight: 500;
+    padding: ${theme.layout.spacing.s500}px ${theme.layout.spacing.s400}px;
+    border-radius: ${theme.layout.spacing.s100}px;
+    color: ${theme.colors.tabDesktop};
+    text-transform: none;
+    line-height: ${theme.fonts.lineHeight.sm};
+    border: none;
+  `)};
+`;
 
 export default TabNavigation;

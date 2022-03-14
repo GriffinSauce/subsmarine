@@ -41,6 +41,7 @@
     "react-loading-skeleton": "^2.2.0",
     "react-query": "3.9.8",
     "react-responsive": "^8.2.0",
+    "tailshake": "^0.0.3",
     "tailwindcss": "^2.0.3"
   },
   "devDependencies": {

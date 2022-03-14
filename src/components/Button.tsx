@@ -1,5 +1,5 @@
 import { ElementType } from 'react';
-import mergeClasses from 'utils/mergeClasses';
+import tailshake from 'tailshake';
 
 export enum ButtonColor {
   Gray = 'gray',
@@ -32,7 +32,7 @@ const Button: React.FC<Props> = ({
   return (
     <Component
       type="button"
-      className={mergeClasses(baseClasses, colorClasses, className)}
+      className={tailshake(baseClasses, colorClasses, className)}
     >
       {children}
     </Component>
