@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Container from 'components/Container';
-import { version } from '../../package.json';
+import pkg from '../../package.json';
+
+const { version } = pkg;
 
 const Footer: React.FC = () => {
   return (
