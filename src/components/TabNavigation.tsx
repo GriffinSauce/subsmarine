@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Avatar from 'components/Avatar';
 import Logo from 'components/Logo';
-import mergeClasses from 'utils/mergeClasses';
+import tailshake from 'tailshake';
 
 const iconSize = 'w-8 h-8';
 
@@ -22,7 +22,7 @@ const TabNavigation: React.FC = () => {
             <Link href="/subs">
               <a className="flex items-center justify-center h-full p-3 space-x-2">
                 <div
-                  className={mergeClasses(
+                  className={tailshake(
                     iconSize,
                     'flex items-center justify-center bg-blue-100 bg-cover rounded-full',
                   )}

@@ -1,7 +1,7 @@
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 import TabNavigation from 'components/TabNavigation';
-import mergeClasses from 'utils/mergeClasses';
+import tailshake from 'tailshake';
 
 interface Props {
   fullHeight?: boolean;
@@ -15,7 +15,7 @@ const Layout: React.FC<Props> = ({
 }) => {
   return (
     <div
-      className={mergeClasses(
+      className={tailshake(
         'flex flex-col',
         fullHeight ? 'min-h-screen lg:max-h-screen' : 'min-h-screen',
       )}

@@ -5,7 +5,7 @@ import { formatDistance } from 'date-fns';
 import { FiClock, FiMail, FiCheck } from 'react-icons/fi';
 import { HiSparkles } from 'react-icons/hi';
 import { getHeaderValue, getIsRead } from 'utils/message';
-import mergeClasses from 'utils/mergeClasses';
+import tailshake from 'tailshake';
 
 interface Props {
   message: gmail_v1.Schema$Message;
@@ -49,7 +49,7 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
       <a className="grid gap-1 leading-none text-left rounded focus:outline-none focus:ring ring-offset-4 ring-blue-200">
         <div className="flex flex-row items-center space-x-2">
           <span
-            className={mergeClasses(
+            className={tailshake(
               'inline-block font-bold text-blue-500 rounded',
               isRead && 'text-gray-500 font-semibold',
               isOpen &&
@@ -65,7 +65,7 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
           )}
         </div>
         <h2
-          className={mergeClasses(
+          className={tailshake(
             'leading-normal	font-semibold truncate',
             isOpen && 'text-blue-700',
           )}
