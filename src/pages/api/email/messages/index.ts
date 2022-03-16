@@ -10,7 +10,9 @@ import {
 } from 'utils/gmail';
 import { MessageFormat } from 'types/gmail';
 import makeCache from 'utils/makeCache';
+import redisClient from 'utils/redisClient';
 import { getUserGoogleAccessToken } from 'utils/auth';
+import { createInbox, getEmails, getInbox } from 'utils/mail';
 
 const debug = Debug('subsmarine:api:email:messages');
 
@@ -30,20 +32,6 @@ export interface ResponseError {
 
 type ResponseDataOrError = ResponseData | ResponseError;
 
-interface GetNewsletterLabelParams {
-  userId: string;
-  accessToken: string;
-}
-
-const getNewsletterLabelCached = makeCache<
-  GetNewsletterLabelParams,
-  ReturnType<typeof getNewsletterLabel>
->({
-  generateKey: ({ userId }) => `user:${userId}:labels:newsletter`,
-  fetchFreshValue: ({ accessToken }) => getNewsletterLabel({ accessToken }),
-  ttl: 60 * 60 * 24 * 7, // One week in seconds,
-});
-
 export default async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseDataOrError>,
@@ -59,57 +47,24 @@ export default async (
   const { user } = session;
   const userId = user.sub;
 
-  // TODO: error handling
-  const { accessToken } = await getUserGoogleAccessToken({ userId });
+  const inboxIdKey = `user:${userId}:inboxId`;
+  const inboxId = await redisClient.get(inboxIdKey);
+  console.log('inboxId', inboxId);
 
-  let newsletterLabel: gmail_v1.Schema$Label;
-  try {
-    newsletterLabel = await getNewsletterLabelCached({
-      userId,
-      accessToken,
-    });
-  } catch (error) {
-    if (isAuthenticationError(error)) {
-      res.status(401).json({ error: ErrorMessage.Unauthenticated });
-      return;
-    }
-    res.status(500).json({ error: ErrorMessage.UnhandledError });
-    return;
-  }
-  if (!newsletterLabel) {
-    res.status(404).json({ error: ErrorMessage.LabelNotFound });
+  if (!inboxId) {
+    const inbox = await createInbox();
+    await redisClient.set(inboxIdKey, inbox.id);
+    res.json({ inbox, messages: [] });
     return;
   }
 
-  debug('fetched label', newsletterLabel);
-
-  let messages: gmail_v1.Schema$Message[];
-  try {
-    messages = await getBaseMessages({
-      accessToken,
-      labelId: newsletterLabel.id,
-      maxResults: 50,
-    });
-  } catch (error) {
-    if (isAuthenticationError(error)) {
-      res.status(401).json({ error: ErrorMessage.Unauthenticated });
-      return;
-    }
-    res.status(500).json({ error: ErrorMessage.UnhandledError });
+  const inbox = await getInbox(inboxId);
+  if (!inbox) {
+    res.status(500).json({ error: 'inboxNotFound' });
     return;
   }
-  debug('fetched message list');
 
-  // Add labels and headers to messages
-  const messagesWithMeta: gmail_v1.Schema$Message[] = await Promise.all(
-    messages.map((message) =>
-      getMessage({
-        accessToken,
-        messageId: message.id,
-        format: MessageFormat.Metadata,
-      }),
-    ),
-  );
+  const emails = await getEmails(inboxId);
 
-  res.json({ messages: messagesWithMeta });
+  res.json({ inbox, messages: emails });
 };
