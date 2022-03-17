@@ -1,29 +1,20 @@
 import { getSession } from '@auth0/nextjs-auth0';
-import { gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
 import Debug from 'debug';
-import {
-  getNewsletterLabel,
-  getBaseMessages,
-  getMessage,
-  isAuthenticationError,
-} from 'utils/gmail';
-import { MessageFormat } from 'types/gmail';
 import makeCache from 'utils/makeCache';
 import redisClient from 'utils/redisClient';
-import { getUserGoogleAccessToken } from 'utils/auth';
-import { createInbox, getEmails, getInbox } from 'utils/mail';
+import { getEmails } from 'utils/mail';
+import { EmailPreview } from 'mailslurp-client';
 
 const debug = Debug('subsmarine:api:email:messages');
 
 enum ErrorMessage {
   Unauthenticated = 'unauthenticated',
   UnhandledError = 'unhandledError',
-  LabelNotFound = 'labelNotFound',
 }
 
 export interface ResponseData {
-  messages: gmail_v1.Schema$Message[];
+  messages: EmailPreview[];
 }
 
 export interface ResponseError {
@@ -49,22 +40,13 @@ export default async (
 
   const inboxIdKey = `user:${userId}:inboxId`;
   const inboxId = await redisClient.get(inboxIdKey);
-  console.log('inboxId', inboxId);
 
   if (!inboxId) {
-    const inbox = await createInbox();
-    await redisClient.set(inboxIdKey, inbox.id);
-    res.json({ inbox, messages: [] });
+    res.status(500).json({ error: 'noInbox' });
     return;
   }
 
-  const inbox = await getInbox(inboxId);
-  if (!inbox) {
-    res.status(500).json({ error: 'inboxNotFound' });
-    return;
-  }
+  const messages = await getEmails(inboxId);
 
-  const emails = await getEmails(inboxId);
-
-  res.json({ inbox, messages: emails });
+  res.json({ messages });
 };

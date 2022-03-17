@@ -8,6 +8,7 @@ import Avatar from 'components/Avatar';
 import Button from 'components/Button';
 import useRedirectUnauthenticated from 'hooks/useRedirectUnauthenticated';
 import ThemeToggle from 'components/ThemeToggle';
+import useInbox from 'hooks/useInbox';
 
 const Title: React.FC = ({ children }) => (
   <h1 className="flex flex-row items-center justify-start space-x-3 h1">
@@ -29,6 +30,9 @@ const ProfileSkeleton = () => (
 
 const Profile = () => {
   const { user } = useUser();
+  const { data } = useInbox();
+  const inbox = data?.inbox;
+
   return (
     <>
       <Title>Your profile</Title>
@@ -42,6 +46,14 @@ const Profile = () => {
             <br />
             <small>{user.email}</small>
           </div>
+        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="h2">Your personal email</h2>
+        <p>Send your newsletters here to get them in the app:</p>
+        <div className="p-3 leading-none bg-gray-100 rounded-md dark:bg-blue-900">
+          {inbox ? inbox.emailAddress : <Skeleton />}
         </div>
       </section>
 
