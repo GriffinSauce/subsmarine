@@ -1,7 +1,6 @@
 import { getSession } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 import Debug from 'debug';
-import makeCache from 'utils/makeCache';
 import redisClient from 'utils/redisClient';
 import { createInbox, getInbox } from 'utils/mail';
 import { InboxDto } from 'mailslurp-client';
@@ -11,6 +10,7 @@ const debug = Debug('subsmarine:api:email:messages');
 enum ErrorMessage {
   Unauthenticated = 'unauthenticated',
   UnhandledError = 'unhandledError',
+  InboxNotFound = 'inboxNotFound',
 }
 
 export interface ResponseData {
@@ -27,13 +27,13 @@ export default async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseDataOrError>,
 ): Promise<void> => {
-  const session = await getSession(req, res);
+  const session = getSession(req, res);
   if (!session) {
     res.status(401).json({ error: ErrorMessage.Unauthenticated });
     return;
   }
 
-  debug('fetching messages');
+  debug('fetching inbox');
 
   const { user } = session;
   const userId = user.sub;
@@ -51,7 +51,7 @@ export default async (
 
   const inbox = await getInbox(inboxId);
   if (!inbox) {
-    res.status(500).json({ error: 'inboxNotFound' });
+    res.status(500).json({ error: ErrorMessage.InboxNotFound });
     return;
   }
 

@@ -1,20 +1,24 @@
 import { getSession } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 import Debug from 'debug';
-import makeCache from 'utils/makeCache';
 import redisClient from 'utils/redisClient';
-import { getEmails } from 'utils/mail';
-import { EmailPreview } from 'mailslurp-client';
+import {
+  ExpandedEmailPreview,
+  getEmails,
+  getExpandedEmailPreview,
+  getEmailCached,
+} from 'utils/mail';
 
 const debug = Debug('subsmarine:api:email:messages');
 
 enum ErrorMessage {
   Unauthenticated = 'unauthenticated',
   UnhandledError = 'unhandledError',
+  InboxNotFound = 'inboxNotFound',
 }
 
 export interface ResponseData {
-  messages: EmailPreview[];
+  messages: ExpandedEmailPreview[];
 }
 
 export interface ResponseError {
@@ -42,11 +46,21 @@ export default async (
   const inboxId = await redisClient.get(inboxIdKey);
 
   if (!inboxId) {
-    res.status(500).json({ error: 'noInbox' });
+    res.status(500).json({ error: ErrorMessage.InboxNotFound });
     return;
   }
 
-  const messages = await getEmails(inboxId);
+  const messagePreviews = await getEmails(inboxId);
+
+  const messages = await Promise.all(
+    messagePreviews.map(async (messagePreview) => {
+      const email = await getEmailCached({
+        userId,
+        emailId: messagePreview.id,
+      });
+      return getExpandedEmailPreview(email);
+    }),
+  );
 
   res.json({ messages });
 };

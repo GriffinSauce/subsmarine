@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { gmail_v1 } from 'googleapis';
 import { formatDistance } from 'date-fns';
 import { FiClock, FiMail, FiCheck } from 'react-icons/fi';
 import { HiSparkles } from 'react-icons/hi';
-import { getHeaderValue, getIsRead } from 'utils/message';
 import tailshake from 'tailshake';
+import { getHeaderValue } from 'utils/message';
+import { ExpandedEmailPreview } from 'utils/mail';
 
 interface Props {
-  message: gmail_v1.Schema$Message;
+  message: ExpandedEmailPreview;
 }
 
 interface From {
@@ -36,13 +36,11 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
   const fromString = getHeaderValue(message, 'From');
   const from = parseFrom(fromString);
 
-  const receivedDate = new Date(parseInt(message.internalDate, 10));
+  const receivedDate = new Date(message.createdAt);
   const when = formatDistance(receivedDate, new Date(), {
     addSuffix: true,
   });
   const whenShort = when.replace(/^about /, '');
-
-  const isRead = getIsRead(message);
 
   return (
     <Link href={`/subs/${message.id}`}>
@@ -51,14 +49,14 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
           <span
             className={tailshake(
               'inline-block font-bold text-blue-500 rounded',
-              isRead && 'text-gray-500 font-semibold',
+              message.read && 'text-gray-500 font-semibold',
               isOpen &&
                 'px-1 ring ring-blue-500 font-semibold bg-blue-500 text-white',
             )}
           >
             {from.name}
           </span>
-          {isRead ? (
+          {message.read ? (
             <FiCheck className="text-gray-400" />
           ) : (
             <HiSparkles className="text-yellow-400" />
@@ -70,7 +68,7 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
             isOpen && 'text-blue-700',
           )}
         >
-          <span>{getHeaderValue(message, 'Subject')}</span>
+          <span>{message.subject}</span>
           <span className="font-normal text-gray-400">
             {' '}
             - {message.snippet}

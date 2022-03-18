@@ -16,7 +16,7 @@ const Page: NextPage = () => {
   const messageId = useSelectedMessageId();
 
   const isMobile = useMediaQuery({ maxWidth: BreakPoints.lg });
-  const isMounted = useIsMounted(); // Defer until hyrdated so we know the layout and route params
+  const isMounted = useIsMounted(); // Defer until hydrated so we know the layout and route params
 
   return (
     <Layout fullHeight={!isMobile} withFooter={false}>

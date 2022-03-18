@@ -3,7 +3,6 @@ import MessageBody from 'components/MessageBody';
 import Loader from 'components/Loader';
 import useMessage from 'hooks/useMessage';
 import useSetRead from 'hooks/useSetRead';
-import { getHeaderValue } from 'utils/message';
 
 interface Props {
   id: string | undefined;
@@ -46,9 +45,7 @@ const Message: React.FC<Props> = ({ id }) => {
   const { message } = data;
   return (
     <>
-      <h1 className="px-6 text-center h2">
-        {getHeaderValue(message, 'Subject')}
-      </h1>
+      <h1 className="px-6 text-center h2">{message.subject}</h1>
       <hr className="mt-6" />
       <MessageBody message={message} />
     </>

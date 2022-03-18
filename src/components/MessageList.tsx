@@ -8,7 +8,7 @@ const MessageList: React.FC = () => {
 
   if (isError) return <div>Sorry, something went wrong.</div>;
 
-  if (isIdle || isLoading)
+  if (!data || isIdle || isLoading)
     return (
       <ul className="space-y-6">
         <Times length={12}>

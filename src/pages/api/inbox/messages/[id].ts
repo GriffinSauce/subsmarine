@@ -1,46 +1,27 @@
 import { getSession } from '@auth0/nextjs-auth0';
-import { gmail_v1 } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getMessage, modifyMessage, isAuthenticationError } from 'utils/gmail';
-import { MessageFormat } from 'types/gmail';
-import makeCache from 'utils/makeCache';
 import Debug from 'debug';
-import { getUserGoogleAccessToken } from 'utils/auth';
+import { getEmailCached, markAsRead } from 'utils/mail';
+import { Email } from 'mailslurp-client';
 
 const debug = Debug('subsmarine:api:email:messages:id');
 
 enum ErrorMessage {
   Unauthenticated = 'unauthenticated',
   UnhandledError = 'unhandledError',
+  UnhandledInput = 'unhandledInput',
 }
 
 export interface ResponseData {
-  message: gmail_v1.Schema$Message;
+  message: Email;
 }
 
 export interface ResponseError {
   error: ErrorMessage;
+  details?: string;
 }
 
 type ResponseDataOrError = ResponseData | ResponseError;
-
-interface GetMessageParams {
-  userId: string;
-  messageId: string;
-  format: MessageFormat;
-  accessToken: string;
-}
-
-const getMessageCached = makeCache<
-  GetMessageParams,
-  ReturnType<typeof getMessage>
->({
-  generateKey: ({ userId, messageId, format }) =>
-    `user:${userId}:messages:${messageId}:${format}`,
-  fetchFreshValue: ({ accessToken, messageId, format }) =>
-    getMessage({ accessToken, messageId, format }),
-  ttl: 60 * 60 * 24, // One day in seconds,
-});
 
 const handleGet = async (
   req: NextApiRequest,
@@ -55,26 +36,17 @@ const handleGet = async (
   const { user } = session;
   const userId = user.sub;
 
-  // TODO: error handling
-  const { accessToken } = await getUserGoogleAccessToken({ userId });
-
   const { id } = req.query;
 
   debug(`fetching message ${id}`);
 
-  let message;
+  let email: Email;
   try {
-    message = await getMessageCached({
+    email = await getEmailCached({
       userId,
-      accessToken,
-      messageId: `${id}`,
-      format: MessageFormat.Full,
+      emailId: `${id}`,
     });
   } catch (error) {
-    if (isAuthenticationError(error)) {
-      res.status(401).json({ error: ErrorMessage.Unauthenticated });
-      return;
-    }
     console.error(`Error fetching message ${id} - ${error.message}`);
     res.status(500).json({ error: ErrorMessage.UnhandledError });
     return;
@@ -82,7 +54,7 @@ const handleGet = async (
 
   debug(`fetched message ${id}`);
 
-  res.json({ message });
+  res.json({ message: email });
 };
 
 const handlePost = async (
@@ -95,25 +67,24 @@ const handlePost = async (
     return;
   }
 
-  const { user } = session;
-  const userId = user.sub;
-
-  // TODO: error handling
-  const { accessToken } = await getUserGoogleAccessToken({ userId });
-
   const { id } = req.query;
 
+  const { read, ...rest } = req.body;
+
+  if (Object.keys(rest).length) {
+    res.status(400).json({
+      error: ErrorMessage.UnhandledError,
+      details: `Only 'read' is currently supported`,
+    });
+    return;
+  }
+
   try {
-    await modifyMessage({
-      accessToken,
-      messageId: `${id}`,
-      update: req.body,
+    await markAsRead({
+      emailId: `${id}`,
+      read,
     });
   } catch (error) {
-    if (isAuthenticationError(error)) {
-      res.status(401).json({ error: ErrorMessage.Unauthenticated });
-      return;
-    }
     console.error(`Error modifying message ${id} - ${error.message}`);
     res.status(500).json({ error: ErrorMessage.UnhandledError });
     return;

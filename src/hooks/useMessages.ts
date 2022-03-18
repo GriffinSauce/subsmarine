@@ -7,7 +7,9 @@ const fetchMessages = (): Promise<ResponseData> =>
   fetcher('/api/inbox/messages');
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-function useMessages(options: UseQueryOptions<ResponseData> = {}) {
+function useMessages(
+  options: UseQueryOptions<ResponseData, ResponseError> = {},
+) {
   const { user } = useUser();
   const isAuthenticated = !!user;
 
