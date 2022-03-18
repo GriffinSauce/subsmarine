@@ -1,5 +1,5 @@
 import fetcher from 'utils/fetcher';
-import makeCache from 'utils/makeCache';
+import { makeCache } from 'utils/cache';
 import Debug from 'debug';
 
 const debug = Debug('subsmarine:auth');

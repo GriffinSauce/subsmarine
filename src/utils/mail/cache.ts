@@ -1,5 +1,4 @@
-import makeCache from 'utils/makeCache';
-import redisClient from 'utils/redisClient';
+import { makeCache, makeInvalidateCache } from 'utils/cache';
 import { getEmail } from './api';
 
 interface GetEmailParams {
@@ -19,8 +18,6 @@ export const getEmailCached = makeCache<
   ttl: 60 * 60 * 24, // One day in seconds,
 });
 
-export const invalidateEmailCache = ({
-  userId,
-  emailId,
-}: GetEmailParams): Promise<unknown> =>
-  redisClient.del(generateEmailKey({ userId, emailId }));
+export const invalidateEmailCache = makeInvalidateCache<GetEmailParams>({
+  generateKey: generateEmailKey,
+});
