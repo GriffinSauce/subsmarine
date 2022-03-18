@@ -1,7 +1,7 @@
 import { getSession } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 import Debug from 'debug';
-import { getEmailCached, markAsRead } from 'utils/mail';
+import { getEmailCached, invalidateEmailCache, markAsRead } from 'utils/mail';
 import { Email } from 'mailslurp-client';
 
 const debug = Debug('subsmarine:api:email:messages:id');
@@ -67,6 +67,9 @@ const handlePost = async (
     return;
   }
 
+  const { user } = session;
+  const userId = user.sub;
+
   const { id } = req.query;
 
   const { read, ...rest } = req.body;
@@ -86,6 +89,17 @@ const handlePost = async (
     });
   } catch (error) {
     console.error(`Error modifying message ${id} - ${error.message}`);
+    res.status(500).json({ error: ErrorMessage.UnhandledError });
+    return;
+  }
+
+  try {
+    await invalidateEmailCache({
+      userId,
+      emailId: `${id}`,
+    });
+  } catch (error) {
+    console.error(`Error invalidating message ${id} cache - ${error.message}`);
     res.status(500).json({ error: ErrorMessage.UnhandledError });
     return;
   }

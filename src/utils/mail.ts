@@ -1,6 +1,7 @@
 import { Email, EmailPreview, InboxDto, MailSlurp } from 'mailslurp-client';
 import { nanoid } from 'nanoid';
 import { pick } from 'lodash-es';
+import redisClient from 'utils/redisClient';
 import makeCache from './makeCache';
 
 const mailslurp = new MailSlurp({ apiKey: process.env.MAILSLURP_API_KEY });
@@ -60,14 +61,23 @@ interface GetEmailParams {
   emailId: string;
 }
 
+const generateEmailKey = ({ userId, emailId }: GetEmailParams) =>
+  `user:${userId}:messages:${emailId}`;
+
 export const getEmailCached = makeCache<
   GetEmailParams,
   ReturnType<typeof getEmail>
 >({
-  generateKey: ({ userId, emailId }) => `user:${userId}:messages:${emailId}`,
+  generateKey: generateEmailKey,
   fetchFreshValue: ({ emailId }) => getEmail(emailId),
   ttl: 60 * 60 * 24, // One day in seconds,
 });
+
+export const invalidateEmailCache = ({
+  userId,
+  emailId,
+}: GetEmailParams): Promise<unknown> =>
+  redisClient.del(generateEmailKey({ userId, emailId }));
 
 export const markAsRead = async (options: {
   emailId: string;

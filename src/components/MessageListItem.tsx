@@ -68,11 +68,7 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
             isOpen && 'text-blue-700',
           )}
         >
-          <span>{message.subject}</span>
-          <span className="font-normal text-gray-400">
-            {' '}
-            - {message.snippet}
-          </span>
+          {message.subject}
         </h2>
         <div className="flex items-center space-x-2 text-xs text-gray-400">
           <span className="flex items-center space-x-1">
