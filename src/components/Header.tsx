@@ -1,3 +1,4 @@
+import React from 'react';
 import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
 import { FiLayers, FiZap } from 'react-icons/fi';
@@ -6,14 +7,21 @@ import Container from 'components/Container';
 import Logo from 'components/Logo';
 import Avatar from 'components/Avatar';
 
-type AnchorProps = React.HTMLProps<HTMLLinkElement>;
-const HeaderLink: React.FC<AnchorProps> = ({ children }) => {
-  return (
-    <a className="flex items-center justify-center px-4 py-3 space-x-2 text-lg font-semibold bg-white dark:bg-gray-800 rounded-xl">
-      {children}
-    </a>
-  );
-};
+type AnchorProps = React.HTMLProps<HTMLAnchorElement>;
+const HeaderLink = React.forwardRef<HTMLAnchorElement, AnchorProps>(
+  ({ href, onClick, children }, ref) => {
+    return (
+      <a
+        ref={ref}
+        href={href}
+        onClick={onClick}
+        className="flex items-center justify-center px-4 py-3 space-x-2 text-lg font-semibold bg-white dark:bg-gray-800 rounded-xl"
+      >
+        {children}
+      </a>
+    );
+  },
+);
 
 const ProfileLink = () => {
   const { user } = useUser();
@@ -33,12 +41,10 @@ const ProfileLink = () => {
 };
 
 const SignupLink = () => (
-  <Link href="/profile">
-    <HeaderLink href="/api/auth/login">
-      <FiZap />
-      <span>Get started</span>
-    </HeaderLink>
-  </Link>
+  <HeaderLink href="/api/auth/login">
+    <FiZap />
+    <span>Get started</span>
+  </HeaderLink>
 );
 
 const Header: React.FC = () => {
@@ -50,7 +56,7 @@ const Header: React.FC = () => {
         <nav>
           <ul className="flex flex-row items-center justify-between w-full space-x-3">
             <li>
-              <Link href="/">
+              <Link href="/" passHref>
                 <HeaderLink>
                   <Logo className="h-6" />
                   <span>Subsmarine</span>
@@ -58,7 +64,7 @@ const Header: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link href="/subs">
+              <Link href="/subs" passHref>
                 <HeaderLink>
                   <FiLayers />
                   <span>Subs</span>
