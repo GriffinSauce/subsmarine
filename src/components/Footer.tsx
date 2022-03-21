@@ -1,25 +1,29 @@
+import { AiOutlineBulb } from 'react-icons/ai';
+import { FiGithub } from 'react-icons/fi';
 import Link from 'next/link';
 import Container from 'components/Container';
-import pkg from '../../package.json';
-
-const { version } = pkg;
 
 const Footer: React.FC = () => {
   return (
-    <footer className="italic text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
-      <hr className="dark:border-gray-700" />
+    <footer className="text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
       <Container>
-        <ul className="py-1 space-x-4 text-right">
-          <li className="inline-block">
-            <a href="https://github.com/GriffinSauce/subsmarine">GitHub</a>
-          </li>
-          <li className="inline-block">
-            <Link href="/policy">
-              <a>Policy</a>
-            </Link>
-          </li>
-          <li className="inline-block">v{version}</li>
-        </ul>
+        <div className="py-1 space-x-4">
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            className="space-x-0.5"
+            href="https://github.com/GriffinSauce/subsmarine"
+          >
+            <FiGithub className="inline-block" />
+            <span className="align-middle">GitHub</span>
+          </a>
+          <Link href="/about">
+            <a className="space-x-0.5">
+              <AiOutlineBulb className="inline-block" />
+              <span className="align-middle">About</span>
+            </a>
+          </Link>
+        </div>
       </Container>
     </footer>
   );

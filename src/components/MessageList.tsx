@@ -1,6 +1,6 @@
 import MessageListItem from 'components/MessageListItem';
 import MessageListItemSkeleton from 'components/MessageListItemSkeleton';
-import Times from 'components/Times';
+import Repeat from 'components/Repeat';
 import useMessages from 'hooks/useMessages';
 
 const MessageList: React.FC = () => {
@@ -11,11 +11,11 @@ const MessageList: React.FC = () => {
   if (!data || isIdle || isLoading)
     return (
       <ul className="space-y-6">
-        <Times length={12}>
+        <Repeat length={12}>
           <li>
             <MessageListItemSkeleton />
           </li>
-        </Times>
+        </Repeat>
       </ul>
     );
 

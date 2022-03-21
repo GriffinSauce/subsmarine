@@ -5,7 +5,7 @@ import redisClient from 'utils/redisClient';
 import { createInbox, getInbox } from 'utils/mail';
 import { InboxDto } from 'mailslurp-client';
 
-const debug = Debug('subsmarine:api:email:messages');
+const debug = Debug('subsmarine:api:inbox');
 
 enum ErrorMessage {
   Unauthenticated = 'unauthenticated',

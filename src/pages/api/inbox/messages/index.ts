@@ -9,7 +9,7 @@ import {
   getEmailCached,
 } from 'utils/mail';
 
-const debug = Debug('subsmarine:api:email:messages');
+const debug = Debug('subsmarine:api:inbox:messages');
 
 enum ErrorMessage {
   Unauthenticated = 'unauthenticated',

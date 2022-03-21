@@ -1,84 +1,70 @@
-import React from 'react';
 import Link from 'next/link';
-import { useUser } from '@auth0/nextjs-auth0';
-import { FiLayers, FiZap } from 'react-icons/fi';
-import Skeleton from 'react-loading-skeleton';
-import Container from 'components/Container';
-import Logo from 'components/Logo';
+import { AiOutlineThunderbolt } from 'react-icons/ai';
 import Avatar from 'components/Avatar';
+import Logo from 'components/Logo';
+import tailshake from 'tailshake';
+import { useUser } from '@auth0/nextjs-auth0';
+import Container from './Container';
 
-type AnchorProps = React.HTMLProps<HTMLAnchorElement>;
-const HeaderLink = React.forwardRef<HTMLAnchorElement, AnchorProps>(
-  ({ href, onClick, children }, ref) => {
-    return (
-      <a
-        ref={ref}
-        href={href}
-        onClick={onClick}
-        className="flex items-center justify-center px-4 py-3 space-x-2 text-lg font-semibold bg-white dark:bg-gray-800 rounded-xl"
-      >
-        {children}
-      </a>
-    );
-  },
-);
+const iconSize = 'w-8 h-8';
 
-const ProfileLink = () => {
-  const { user } = useUser();
-
+const MainLink = () => {
+  const { user, isLoading } = useUser();
   return (
-    <Link href="/profile">
-      <a className="flex items-center px-4 py-3 space-x-3 leading-none bg-white dark:bg-gray-800 rounded-xl">
-        <Avatar className="w-8 h-8" />
-        <div>
-          <small>{user ? 'Signed in as' : <Skeleton width={100} />}</small>
-          <br />
-          <strong>{user?.name || <Skeleton width={120} />}</strong>
+    <Link href={isLoading || user ? '/subs' : '/'}>
+      <a
+        className="flex items-center justify-center h-full py-3 space-x-2"
+        aria-label="subs"
+      >
+        <div
+          className={tailshake(
+            iconSize,
+            'flex items-center justify-center bg-blue-100 bg-cover rounded-full',
+          )}
+        >
+          <Logo className="w-3/4" />
         </div>
+        <span className="text-lg font-semibold dark:text-gray-50">
+          Subsmarine
+        </span>
       </a>
     </Link>
   );
 };
 
-const SignupLink = () => (
-  <HeaderLink href="/api/auth/login">
-    <FiZap />
-    <span>Get started</span>
-  </HeaderLink>
+const ProfileLink = () => (
+  <Link href="/profile">
+    <a
+      className="flex items-center justify-center h-full py-3 pl-3"
+      aria-label="profile"
+    >
+      <Avatar className={iconSize} />
+    </a>
+  </Link>
 );
 
-const Header: React.FC = () => {
-  const { user, isLoading } = useUser();
+const SignupLink = () => (
+  <a
+    href="/api/auth/login"
+    className="flex items-center justify-center p-3 space-x-1 text-lg font-semibold"
+  >
+    <AiOutlineThunderbolt />
+    <span>Get started</span>
+  </a>
+);
 
+const HeaderMobile: React.FC = () => {
+  const { user, isLoading } = useUser();
   return (
-    <header className="hidden py-2 bg-gray-100 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900 lg:block">
+    <div className="w-full bg-white border-b dark:bg-gray-800 dark:border-gray-700">
       <Container>
-        <nav>
-          <ul className="flex flex-row items-center justify-between w-full space-x-3">
-            <li>
-              <Link href="/" passHref>
-                <HeaderLink>
-                  <Logo className="h-6" />
-                  <span>Subsmarine</span>
-                </HeaderLink>
-              </Link>
-            </li>
-            <li>
-              <Link href="/subs" passHref>
-                <HeaderLink>
-                  <FiLayers />
-                  <span>Subs</span>
-                </HeaderLink>
-              </Link>
-            </li>
-            <li className="flex justify-end flex-grow">
-              {isLoading || user ? <ProfileLink /> : <SignupLink />}
-            </li>
-          </ul>
+        <nav className="flex justify-between">
+          <MainLink />
+          {isLoading || user ? <ProfileLink /> : <SignupLink />}
         </nav>
       </Container>
-    </header>
+    </div>
   );
 };
 
-export default Header;
+export default HeaderMobile;

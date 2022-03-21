@@ -45,8 +45,7 @@ const Message: React.FC<Props> = ({ id }) => {
   const { message } = data;
   return (
     <>
-      <h1 className="px-6 text-center h2">{message.subject}</h1>
-      <hr className="mt-6" />
+      <h1 className="h2">{message.subject}</h1>
       <MessageBody message={message} />
     </>
   );

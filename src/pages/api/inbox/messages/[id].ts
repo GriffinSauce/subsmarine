@@ -4,7 +4,7 @@ import Debug from 'debug';
 import { getEmailCached, invalidateEmailCache, markAsRead } from 'utils/mail';
 import { Email } from 'mailslurp-client';
 
-const debug = Debug('subsmarine:api:email:messages:id');
+const debug = Debug('subsmarine:api:inbox:messages:id');
 
 enum ErrorMessage {
   Unauthenticated = 'unauthenticated',

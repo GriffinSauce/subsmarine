@@ -10,7 +10,7 @@ function useMessages(options: UseQueryOptions<ResponseData> = {}) {
   const { user } = useUser();
   const isAuthenticated = !!user;
 
-  return useQuery<ResponseData, ResponseError>('messages', fetchMessages, {
+  return useQuery<ResponseData, ResponseError>('inbox', fetchMessages, {
     ...options,
     enabled: isAuthenticated && options.enabled,
     staleTime: 1000 * 60, // ms
