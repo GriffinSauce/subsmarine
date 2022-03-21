@@ -6,30 +6,25 @@ interface Props {
   className?: string;
 }
 
-const baseClasses = 'w-10 h-10 rounded-full bg-gray-50';
-
 const Avatar: React.FC<Props> = ({ className }) => {
   const { user } = useUser();
-
-  if (user?.picture)
-    return (
-      <span
-        style={{
-          backgroundImage: `url(${user.picture})`,
-        }}
-        className={tailshake(baseClasses, 'bg-cover', className)}
-      />
-    );
 
   return (
     <div
       className={tailshake(
-        baseClasses,
-        'flex items-center justify-center',
+        'relative flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 overflow-hidden',
         className,
       )}
     >
       <FiUser />
+      {user?.picture ? (
+        <div
+          style={{
+            backgroundImage: `url(${user.picture})`,
+          }}
+          className="absolute inset-0 bg-cover"
+        />
+      ) : null}
     </div>
   );
 };

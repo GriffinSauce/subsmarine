@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
-import { ResponseData } from 'pages/api/email/messages/[id]';
-import { getIsRead } from 'utils/message';
-import { SystemLabelId } from 'types/gmail';
+import { ResponseData } from 'pages/api/inbox/messages/[id]';
 import fetcher from 'utils/fetcher';
 
 interface ModifyMessageOptions {
@@ -14,7 +12,7 @@ const modifyMessage = ({
   id,
   update,
 }: ModifyMessageOptions): Promise<ResponseData> =>
-  fetcher(`/api/email/messages/${id}`, { method: 'POST', body: update });
+  fetcher(`/api/inbox/messages/${id}`, { method: 'POST', body: update });
 
 const useSetRead = (message: ResponseData['message'] | undefined): void => {
   const queryClient = useQueryClient();
@@ -28,7 +26,7 @@ const useSetRead = (message: ResponseData['message'] | undefined): void => {
       // Could use react-query useMutation for error handling
       await modifyMessage({
         id: messageId,
-        update: { removeLabelIds: [SystemLabelId.Unread] },
+        update: { read: true },
       });
 
       // Invalidate message list (and refetch if visible)
@@ -36,7 +34,7 @@ const useSetRead = (message: ResponseData['message'] | undefined): void => {
     };
 
     const isHandled = message?.id === handledMessage;
-    if (message && !isHandled && !getIsRead(message)) setRead(message?.id);
+    if (message && !isHandled && !message.read) setRead(message?.id);
   }, [handledMessage, message, queryClient]);
 };
 

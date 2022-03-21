@@ -9,7 +9,7 @@ interface CacheOptions<Params, ReturnValue> {
   ttl: number;
 }
 
-const makeCache = <Params, ReturnValue extends Promise<unknown>>({
+export const makeCache = <Params, ReturnValue extends Promise<unknown>>({
   generateKey,
   fetchFreshValue,
   ttl,
@@ -48,4 +48,11 @@ const makeCache = <Params, ReturnValue extends Promise<unknown>>({
   };
 };
 
-export default makeCache;
+interface InvalidateCacheOptions<Params> {
+  generateKey: (params: Params) => string;
+}
+
+export const makeInvalidateCache =
+  <Params>({ generateKey }: InvalidateCacheOptions<Params>) =>
+  (params: Params): Promise<unknown> =>
+    redisClient.del(generateKey(params));

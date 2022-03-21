@@ -1,6 +1,5 @@
 import Header from 'components/Header';
 import Footer from 'components/Footer';
-import TabNavigation from 'components/TabNavigation';
 import tailshake from 'tailshake';
 
 interface Props {
@@ -23,7 +22,6 @@ const Layout: React.FC<Props> = ({
       <Header />
       <main className="flex flex-col flex-grow min-h-0">{children}</main>
       {withFooter && <Footer />}
-      <TabNavigation />
     </div>
   );
 };

@@ -1,10 +1,10 @@
-import { gmail_v1 } from 'googleapis';
+import { Email } from 'mailslurp-client';
 import { useTheme } from 'next-themes';
 import { getBodyHTML } from 'utils/message';
 import styles from './MessageBody.module.css';
 
 interface Props {
-  message: gmail_v1.Schema$Message;
+  message: Email;
 }
 
 const MessageBody: React.FC<Props> = ({ message }) => {

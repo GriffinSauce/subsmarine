@@ -40,11 +40,7 @@ const Page: NextPage = () => {
                 </>
               ) : (
                 <>
-                  <p>
-                    Subsmarine only works with Gmail for now.
-                    <br />
-                    Sign in to get started.
-                  </p>
+                  <p>Sign in to get started.</p>
                   <p>
                     <a href="/api/auth/login">
                       <Button as="span">Sign in</Button>
