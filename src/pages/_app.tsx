@@ -1,5 +1,6 @@
 import 'tailwindcss/tailwind.css';
 import 'styles/global.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { AppProps } from 'next/app';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
@@ -34,7 +35,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     <UserProvider>
       <QueryClientProvider client={queryClient}>
         {/* <ThemeProvider defaultTheme="system" attribute="class"> */}
-        <ThemeProvider defaultTheme="light" attribute="class">
+        <ThemeProvider defaultTheme="system" attribute="class">
           <SkeletonThemeProvider>
             <Head>
               <title>Subsmarine</title>
