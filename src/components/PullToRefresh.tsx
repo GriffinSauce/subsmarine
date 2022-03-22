@@ -36,7 +36,7 @@ const PullToRefresh: React.FC<Props> = ({ children, onPull }) => {
   const dragY = useMotionValue(0);
 
   // Respond to drag movement
-  const opacity = useTransform(dragY, [0, 100], [0, 1]);
+  const opacity = useTransform(dragY, [0, THRESHOLD], [0, 1]);
   const rotate = useTransform(dragY, [0, 200], [0, 360]);
   const y = useTransform(dragY, [0, 200], [-10, 50]);
 
