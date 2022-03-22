@@ -12,7 +12,7 @@ interface Props {
 }
 
 // How far the content needs to be moved before we call onPull
-const yThreshold = 100;
+const THRESHOLD = 100;
 
 /**
  * Returns a ref
@@ -41,7 +41,7 @@ const PullToRefresh: React.FC<Props> = ({ children, onPull }) => {
   const y = useTransform(dragY, [0, 200], [-10, 50]);
 
   // Respond to hitting the threshold
-  const colorYRange = [0, yThreshold, yThreshold + 5];
+  const colorYRange = [0, THRESHOLD, THRESHOLD + 5];
   const bgColorRange = [
     'rgba(255,255,255,0)',
     'rgba(255,255,255,0)',
@@ -49,7 +49,7 @@ const PullToRefresh: React.FC<Props> = ({ children, onPull }) => {
   ];
   const backgroundColor = useTransform(dragY, colorYRange, bgColorRange);
 
-  const hitThresholdRef = useMotionValueThreshold(dragY, yThreshold);
+  const hitThresholdRef = useMotionValueThreshold(dragY, THRESHOLD);
 
   const onDragEnd = () => {
     if (hitThresholdRef.current) onPull();
