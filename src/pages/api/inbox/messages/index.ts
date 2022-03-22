@@ -1,4 +1,5 @@
 import { getSession } from '@auth0/nextjs-auth0';
+import { orderBy } from 'lodash-es';
 import { NextApiRequest, NextApiResponse } from 'next';
 import Debug from 'debug';
 import redisClient from 'utils/redisClient';
@@ -51,9 +52,10 @@ export default async (
   }
 
   const messagePreviews = await getEmails(inboxId);
+  const messagePreviewsSorted = orderBy(messagePreviews, 'createdAt', 'desc');
 
   const messages = await Promise.all(
-    messagePreviews.map(async (messagePreview) => {
+    messagePreviewsSorted.map(async (messagePreview) => {
       const email = await getEmailCached({
         userId,
         emailId: messagePreview.id,
