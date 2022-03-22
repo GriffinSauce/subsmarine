@@ -12,7 +12,7 @@ interface Props {
 }
 
 // How far the content needs to be moved before we call onPull
-const THRESHOLD = 100;
+const THRESHOLD = 60;
 
 /**
  * Returns a ref
