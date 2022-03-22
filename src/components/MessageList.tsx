@@ -4,7 +4,7 @@ import Repeat from 'components/Repeat';
 import useMessages from 'hooks/useMessages';
 
 const MessageList: React.FC = () => {
-  const { isIdle, isLoading, isError, data, refetch } = useMessages();
+  const { isIdle, isLoading, isError, data } = useMessages();
 
   if (isError) return <div>Sorry, something went wrong.</div>;
 
