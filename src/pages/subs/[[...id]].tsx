@@ -4,15 +4,18 @@ import Layout from 'components/Layout';
 import MessageList from 'components/MessageList';
 import Message from 'components/Message';
 import MessageListLoader from 'components/MessageListLoader';
+import PullToRefresh from 'components/PullToRefresh';
 import useIsMounted from 'hooks/useIsMounted';
 import useSelectedMessageId from 'hooks/useSelectedMessageId';
 import useRedirectUnauthenticated from 'hooks/useRedirectUnauthenticated';
+import useMessages from 'hooks/useMessages';
 import { BreakPoints } from 'types/theme';
 
 const Page: NextPage = () => {
   useRedirectUnauthenticated('/');
 
   const messageId = useSelectedMessageId();
+  const { refetch } = useMessages();
 
   const isMobile = useMediaQuery({ maxWidth: BreakPoints.lg });
   const isMounted = useIsMounted(); // Defer until hydrated so we know the layout and route params
@@ -28,7 +31,9 @@ const Page: NextPage = () => {
                   <Message id={messageId} />
                 ) : (
                   <div className="relative min-h-0">
-                    <MessageList />
+                    <PullToRefresh onPull={refetch}>
+                      <MessageList />
+                    </PullToRefresh>
                     <MessageListLoader />
                   </div>
                 )}
