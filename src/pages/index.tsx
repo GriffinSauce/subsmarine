@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import { useUser } from '@auth0/nextjs-auth0';
 import Layout from 'components/Layout';
 import Container from 'components/Container';
@@ -10,6 +12,11 @@ import Loader from 'components/Loader';
 const Page: NextPage = () => {
   // TODO: error handling
   const { user, error, isLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) router.push(`/subs`);
+  }, [user, router]);
 
   return (
     <Layout>

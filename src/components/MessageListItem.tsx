@@ -4,27 +4,11 @@ import { formatDistance } from 'date-fns';
 import { FiClock, FiMail, FiCheck } from 'react-icons/fi';
 import { HiSparkles } from 'react-icons/hi';
 import tailshake from 'tailshake';
-import { getHeaderValue } from 'utils/message';
 import { ExpandedEmailPreview } from 'utils/mail';
 
 interface Props {
   message: ExpandedEmailPreview;
 }
-
-interface From {
-  name: string;
-  email: string;
-}
-
-const fromRegex = /^(?<name>.*)\s<(?<email>.*)>$/;
-const fromNameQuotesRegex = /"(.*)"/;
-
-const parseFrom = (fromString: string): From => {
-  const match = fromRegex.exec(fromString);
-  const { name, email } = match.groups;
-  const nameStripped = name.replace(fromNameQuotesRegex, '$1'); // Names with spaces are quoted
-  return { name: nameStripped, email };
-};
 
 const MessageListItem: React.FC<Props> = ({ message }) => {
   const router = useRouter();
@@ -32,9 +16,6 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
   const [id] = params;
 
   const isOpen = message.id === id;
-
-  const fromString = getHeaderValue(message, 'From');
-  const from = parseFrom(fromString);
 
   const receivedDate = new Date(message.createdAt);
   const when = formatDistance(receivedDate, new Date(), {
@@ -54,7 +35,7 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
                 'px-1 ring ring-blue-500 font-semibold bg-blue-500 text-white',
             )}
           >
-            {from.name}
+            {message.sender.name}
           </span>
           {message.read ? (
             <FiCheck className="text-gray-400" />
@@ -73,7 +54,7 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
         <div className="flex items-center space-x-2 text-xs text-gray-400">
           <span className="flex items-center space-x-1">
             <FiMail />
-            <span className="">{from.email}</span>
+            <span className="">{message.sender.emailAddress}</span>
           </span>
           <span className="flex items-center space-x-1">
             <FiClock />
