@@ -25,7 +25,7 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
 
   return (
     <Link href={`/subs/${message.id}`}>
-      <a className="grid gap-1 leading-none text-left rounded focus:outline-none focus:ring ring-offset-4 ring-blue-200">
+      <a className="grid gap-1 leading-none text-left rounded focus:outline-none focus:ring ring-offset-4 ring-blue-200 dark:ring-gray-900 dark:ring-offset-blue-900">
         <div className="flex flex-row items-center space-x-2">
           <span
             className={tailshake(
