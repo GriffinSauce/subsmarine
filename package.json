@@ -22,6 +22,7 @@
   "author": "Joris Griffioen (https://joris.rocks)",
   "license": "MIT",
   "dependencies": {
+    "@artsy/fresnel": "^3.4.0",
     "@auth0/nextjs-auth0": "^1.7.0",
     "@testing-library/dom": "^7.29.6",
     "@types/dompurify": "^2.2.1",
@@ -43,7 +44,6 @@
     "react-icons": "^4.2.0",
     "react-loading-skeleton": "^3.0.3",
     "react-query": "3.9.8",
-    "react-responsive": "^8.2.0",
     "tailshake": "^0.0.3",
     "tailwindcss": "^2.0.3"
   },
