@@ -41,7 +41,7 @@ class MyDocument extends Document {
           <link rel="manifest" href="/manifest.json" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
           <meta name="msapplication-TileColor" content="#da532c" />
-          <meta name="theme-color" content="#ffffff" />
+          <meta name="theme-color" content="#111827" />
           <style
             type="text/css"
             // eslint-disable-next-line react/no-danger
