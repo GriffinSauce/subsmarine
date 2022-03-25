@@ -1,11 +1,6 @@
-html,
-body {
-  @apply bg-gray-50 dark:bg-gray-900;
-}
-
 body {
   font-size: 15px;
-  @apply text-gray-800 dark:text-gray-300;
+  @apply text-gray-800 dark:text-gray-300 bg-gray-50 dark:bg-gray-900;
 }
 
 .h1,
