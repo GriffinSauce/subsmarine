@@ -4,7 +4,7 @@ import tailshake from 'tailshake';
 
 interface Props {
   withFooter?: boolean;
-  className: string;
+  className?: string;
 }
 
 const Layout: React.FC<Props> = ({
