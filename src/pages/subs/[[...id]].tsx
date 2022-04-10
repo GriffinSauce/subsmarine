@@ -14,7 +14,7 @@ const Page: NextPage = () => {
 
   return (
     <Layout className="lg:max-h-screen" withFooter={false}>
-      <div className="container mx-auto flex min-h-0 flex-grow flex-col space-y-3 px-3 py-4">
+      <div className="container mx-auto flex min-h-0 grow flex-col space-y-3 px-3 py-4">
         <Media lessThan="lg" className="relative min-h-0">
           {messageId ? <Message id={messageId} /> : <MessageList />}
         </Media>

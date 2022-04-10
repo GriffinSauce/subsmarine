@@ -15,7 +15,7 @@ const Layout: React.FC<Props> = ({
   return (
     <div className={tailshake('flex flex-col', 'min-h-screen', className)}>
       <Header />
-      <main className="flex min-h-0 flex-grow flex-col">{children}</main>
+      <main className="flex min-h-0 grow flex-col">{children}</main>
       {withFooter && <Footer />}
     </div>
   );

@@ -45,7 +45,8 @@
     "react-loading-skeleton": "^3.0.3",
     "react-query": "3.9.8",
     "tailshake": "^0.0.3",
-    "tailwindcss": "^2.0.3"
+    "tailwind": "^4.0.0",
+    "tailwindcss": "^3.0.23"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.8",
@@ -58,7 +59,7 @@
     "@types/react": "^17.0.2",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
-    "autoprefixer": "^10.2.4",
+    "autoprefixer": "^10.4.4",
     "babel-jest": "^26.6.3",
     "eslint": "^7.20.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
@@ -71,7 +72,7 @@
     "eslint-plugin-sonarjs": "^0.6.0",
     "jest": "^26.6.3",
     "jest-axe": "^4.1.0",
-    "postcss": "^8.2.6",
+    "postcss": "^8.4.12",
     "prettier": "^2.6.2",
     "prettier-plugin-tailwindcss": "^0.1.8",
     "ts-prune": "^0.10.3",
