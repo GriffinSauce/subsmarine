@@ -5,6 +5,7 @@ import Logo from 'components/Logo';
 import tailshake from 'tailshake';
 import { useUser } from '@auth0/nextjs-auth0';
 import Container from './Container';
+import ThemeButton from './ThemeButton';
 
 const iconSize = 'w-8 h-8';
 
@@ -60,7 +61,10 @@ const HeaderMobile: React.FC = () => {
       <Container>
         <nav className="flex justify-between">
           <MainLink />
-          {isLoading || user ? <ProfileLink /> : <SignupLink />}
+          <div className="flex items-center justify-between">
+            <ThemeButton className={iconSize} />
+            {isLoading || user ? <ProfileLink /> : <SignupLink />}
+          </div>
         </nav>
       </Container>
     </div>
