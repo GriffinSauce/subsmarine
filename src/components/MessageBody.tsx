@@ -23,7 +23,7 @@ const MessageBody: React.FC<Props> = ({ message }) => {
     resolvedTheme === 'dark'
       ? `<div class="${styles.darkModeLayer}"></div>`
       : '';
-  const contentLayer = `<div class="${styles.message}">${message.body}</div>`;
+  const contentLayer = `<div class="${styles.message} text-gray-900">${message.body}</div>`;
   const content = `${darkModeLayer}${contentLayer}`;
 
   return (
