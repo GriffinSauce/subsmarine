@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { FiSun, FiMoon } from 'react-icons/fi';
+import tailshake from 'tailshake';
 
 interface Props {
   className?: string;
@@ -29,7 +30,10 @@ const ThemeButton: React.FC<Props> = ({ className = 'w-8 h-8' }) => {
   if (!isMounted) return null;
   return (
     <button
-      className={`flex items-center justify-center text-sm bg-gray-50 dark:bg-gray-700 dark:text-gray-50 rounded-full ${className}`}
+      className={tailshake(
+        'flex items-center justify-center rounded-full bg-gray-50 text-sm dark:bg-gray-700 dark:text-gray-50',
+        className,
+      )}
       type="button"
       data-testid="theme-button"
       aria-label="App theme"

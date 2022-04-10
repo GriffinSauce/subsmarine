@@ -17,7 +17,7 @@ const ThemeToggle: React.FC = () => {
     <div className="inline-flex items-center justify-center space-x-1 text-sm dark:text-gray-50">
       <FiSun />
       <select
-        className="p-1 font-semibold border border-gray-300 rounded dark:bg-gray-900 dark:border-gray-700"
+        className="rounded border border-gray-300 p-1 font-semibold dark:border-gray-700 dark:bg-gray-900"
         value={theme}
         data-testid="theme-select"
         aria-label="App theme"

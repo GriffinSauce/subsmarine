@@ -12,7 +12,7 @@ const Avatar: React.FC<Props> = ({ className }) => {
   return (
     <div
       className={tailshake(
-        'relative flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 overflow-hidden',
+        'relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-50',
         className,
       )}
     >

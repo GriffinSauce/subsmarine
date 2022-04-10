@@ -25,14 +25,14 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
 
   return (
     <Link href={`/subs/${message.id}`}>
-      <a className="grid gap-1 leading-none text-left rounded focus:outline-none focus:ring ring-offset-4 ring-blue-200 dark:ring-gray-900 dark:ring-offset-blue-900">
+      <a className="focus:outline-none grid gap-1 rounded text-left leading-none ring-blue-200 ring-offset-4 focus:ring dark:ring-gray-900 dark:ring-offset-blue-900">
         <div className="flex flex-row items-center space-x-2">
           <span
             className={tailshake(
-              'inline-block font-bold text-blue-500 rounded',
-              message.read && 'text-gray-500 font-semibold',
+              'inline-block rounded font-bold text-blue-500',
+              message.read && 'font-semibold text-gray-500',
               isOpen &&
-                'px-1 ring ring-blue-500 font-semibold bg-blue-500 text-white',
+                'bg-blue-500 px-1 font-semibold text-white ring ring-blue-500',
             )}
           >
             {message.sender.name}
@@ -45,7 +45,7 @@ const MessageListItem: React.FC<Props> = ({ message }) => {
         </div>
         <h2
           className={tailshake(
-            'leading-normal	font-semibold truncate',
+            'truncate	font-semibold leading-normal',
             isOpen && 'text-blue-700',
           )}
         >

@@ -8,13 +8,18 @@ interface TestProviderOptions {
 
 interface CustomOptions extends RenderOptions, TestProviderOptions {}
 
-const createTestProviders = ({
-  theme = 'dark',
-}: TestProviderOptions): React.FC => ({ children }) => (
-  <ThemeProvider defaultTheme={theme} enableSystem={false} attribute="class">
-    {children}
-  </ThemeProvider>
-);
+const createTestProviders =
+  ({ theme = 'dark' }: TestProviderOptions): React.FC =>
+  ({ children }) =>
+    (
+      <ThemeProvider
+        defaultTheme={theme}
+        enableSystem={false}
+        attribute="class"
+      >
+        {children}
+      </ThemeProvider>
+    );
 
 const customRender = (
   ui: ReactElement,

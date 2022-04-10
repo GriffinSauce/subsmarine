@@ -1,6 +1,6 @@
 body {
   font-size: 15px;
-  @apply text-gray-800 dark:text-gray-300 bg-gray-50 dark:bg-gray-900;
+  @apply bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-300;
 }
 
 .h1,
@@ -37,9 +37,9 @@ body {
 
 .scrollbar::-webkit-scrollbar,
 .scrollbar::-webkit-scrollbar-track {
-  @apply bg-gray-100 rounded-full dark:bg-gray-800;
+  @apply rounded-full bg-gray-100 dark:bg-gray-800;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full dark:bg-gray-600;
+  @apply rounded-full bg-gray-300 dark:bg-gray-600;
 }

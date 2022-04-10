@@ -59,10 +59,10 @@ const PullToRefresh: React.FC<Props> = ({ children, onPull }) => {
     <div className="relative">
       <div className="absolute inset-x-0 top-0 flex items-center justify-center">
         <motion.div
-          className="flex items-center justify-center w-10 h-10 rounded-full"
+          className="flex h-10 w-10 items-center justify-center rounded-full"
           style={{ y, opacity, rotate, backgroundColor }}
         >
-          <IoMdRefresh className="w-8 h-8" />
+          <IoMdRefresh className="h-8 w-8" />
         </motion.div>
       </div>
       <motion.div

@@ -23,21 +23,21 @@ const Message: React.FC<Props> = ({ id }) => {
 
   if (isIdle)
     return (
-      <div className="flex items-center justify-center flex-grow h-full">
-        <IoReaderOutline className="mb-24 text-gray-200 text-8xl" />
+      <div className="flex h-full flex-grow items-center justify-center">
+        <IoReaderOutline className="mb-24 text-8xl text-gray-200" />
       </div>
     );
 
   if (isLoading)
     return (
-      <div className="flex items-center justify-center flex-grow h-full">
+      <div className="flex h-full flex-grow items-center justify-center">
         <Loader />
       </div>
     );
 
   if (isError)
     return (
-      <div className="flex items-center justify-center flex-grow h-full">
+      <div className="flex h-full flex-grow items-center justify-center">
         <span>Sorry, something went wrong.</span>
       </div>
     );

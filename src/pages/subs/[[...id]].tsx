@@ -14,18 +14,18 @@ const Page: NextPage = () => {
 
   return (
     <Layout className="lg:max-h-screen" withFooter={false}>
-      <div className="container flex flex-col flex-grow min-h-0 px-3 py-4 mx-auto space-y-3">
+      <div className="container mx-auto flex min-h-0 flex-grow flex-col space-y-3 px-3 py-4">
         <Media lessThan="lg" className="relative min-h-0">
           {messageId ? <Message id={messageId} /> : <MessageList />}
         </Media>
-        <Media greaterThanOrEqual="lg" className="flex flex-row min-h-0 -mr-2">
-          <div className="relative w-1/3 min-h-0 -ml-2 overflow-hidden">
-            <div className="h-full p-2 overflow-y-scroll scrollbar">
+        <Media greaterThanOrEqual="lg" className="-mr-2 flex min-h-0 flex-row">
+          <div className="relative -ml-2 min-h-0 w-1/3 overflow-hidden">
+            <div className="scrollbar h-full overflow-y-scroll p-2">
               <MessageList />
             </div>
             <MessageListLoader />
           </div>
-          <div className="w-2/3 min-h-0 overflow-y-scroll scrollbar">
+          <div className="scrollbar min-h-0 w-2/3 overflow-y-scroll">
             <Message id={messageId} />
           </div>
         </Media>

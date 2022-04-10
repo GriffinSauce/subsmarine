@@ -8,7 +8,12 @@ window.getComputedStyle = (elt) => getComputedStyle(elt);
 
 // Prevent act() error logs
 // TODO: clean up when fixed: https://github.com/vercel/next.js/pull/20169
-jest.mock('next/link', () => ({ children }) => children);
+jest.mock(
+  'next/link',
+  () =>
+    ({ children }) =>
+      children,
+);
 
 let localStorageMock: { [key: string]: string } = {};
 

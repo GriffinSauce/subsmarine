@@ -14,13 +14,13 @@ const MainLink = () => {
   return (
     <Link href={isLoading || user ? '/subs' : '/'}>
       <a
-        className="flex items-center justify-center h-full py-3 space-x-2"
+        className="flex h-full items-center justify-center space-x-2 py-3"
         aria-label="subs"
       >
         <div
           className={tailshake(
             iconSize,
-            'flex items-center justify-center bg-blue-100 bg-cover rounded-full',
+            'flex items-center justify-center rounded-full bg-blue-100 bg-cover',
           )}
         >
           <Logo className="w-3/4" />
@@ -36,7 +36,7 @@ const MainLink = () => {
 const ProfileLink = () => (
   <Link href="/profile">
     <a
-      className="flex items-center justify-center h-full py-3 pl-3"
+      className="flex h-full items-center justify-center py-3 pl-3"
       aria-label="profile"
     >
       <Avatar className={iconSize} />
@@ -47,7 +47,7 @@ const ProfileLink = () => (
 const SignupLink = () => (
   <a
     href="/api/auth/login"
-    className="flex items-center justify-center p-3 space-x-1 text-lg font-semibold"
+    className="flex items-center justify-center space-x-1 p-3 text-lg font-semibold"
   >
     <AiOutlineThunderbolt />
     <span>Get started</span>
@@ -57,7 +57,7 @@ const SignupLink = () => (
 const HeaderMobile: React.FC = () => {
   const { user, isLoading } = useUser();
   return (
-    <div className="w-full bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-full border-b bg-white dark:border-gray-700 dark:bg-gray-800">
       <Container>
         <nav className="flex justify-between">
           <MainLink />

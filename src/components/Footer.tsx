@@ -5,9 +5,9 @@ import Container from 'components/Container';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
+    <footer className="bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
       <Container>
-        <div className="py-1 space-x-4">
+        <div className="space-x-4 py-1">
           <a
             rel="noopener noreferrer"
             target="_blank"

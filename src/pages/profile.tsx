@@ -24,7 +24,7 @@ const Profile = () => {
     <>
       <section className="space-y-3">
         <h2 className="h2">Connected account</h2>
-        <div className="flex items-center p-3 space-x-3 leading-none bg-gray-200 rounded-md dark:bg-blue-900">
+        <div className="flex items-center space-x-3 rounded-md bg-gray-200 p-3 leading-none dark:bg-blue-900">
           <Avatar />
           <div>
             <strong>{user.name}</strong>
@@ -37,7 +37,7 @@ const Profile = () => {
       <section className="space-y-3">
         <h2 className="h2">Your personal email</h2>
         <p>Send your newsletters here to get them in the app:</p>
-        <div className="p-3 leading-none bg-gray-100 rounded-md dark:bg-blue-900">
+        <div className="rounded-md bg-gray-100 p-3 leading-none dark:bg-blue-900">
           {inbox ? inbox.emailAddress : <Skeleton />}
         </div>
       </section>
