@@ -13,7 +13,6 @@ const expandedEmailPreviewKeys = <const>[
   'sender',
   'headers',
   'subject',
-  'body',
   'bodyExcerpt',
   'createdAt',
   'read',
