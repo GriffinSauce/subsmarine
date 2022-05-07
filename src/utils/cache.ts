@@ -31,14 +31,18 @@ interface Cache<Params, ReturnValue> {
   invalidate: (params: Params) => Promise<number>;
 }
 
+type MakeCache = <Params, ReturnValue>(
+  options: CacheOptions<Params, ReturnValue>,
+) => Cache<Params, ReturnValue>;
+
 /**
  * Wrap an async function with a Redis cache
  */
-export const makeCache = <Params, ReturnValue>({
+export const makeCache: MakeCache = ({
   generateKey,
   getFreshValue: fetchFreshValue,
   ttl,
-}: CacheOptions<Params, ReturnValue>): Cache<Params, ReturnValue> => ({
+}) => ({
   get: async (params) => {
     const key = generateKey(params);
 
