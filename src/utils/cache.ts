@@ -1,5 +1,6 @@
 import redisClient from 'utils/redisClient';
 import Debug from 'debug';
+import { encode, decode } from 'lz4';
 
 const debug = Debug('subsmarine:cache');
 
@@ -18,10 +19,10 @@ export const makeCache = <Params, ReturnValue extends Promise<unknown>>({
   return async (params: Params): ReturnValue => {
     const key = generateKey(params);
 
-    let cachedValue: string | null;
+    let cachedValue: Buffer | null;
     try {
       debug(`try - ${key}`);
-      cachedValue = await redisClient.get(key);
+      cachedValue = await redisClient.getBuffer(key);
     } catch (err) {
       console.error(`Error getting ${err.message}`);
     }
@@ -29,7 +30,7 @@ export const makeCache = <Params, ReturnValue extends Promise<unknown>>({
     if (cachedValue) {
       try {
         debug(`hit - ${key}`);
-        return JSON.parse(cachedValue);
+        return JSON.parse(decode(cachedValue).toString());
       } catch (err) {
         console.error(`Error parsing cached value ${err.message}`);
       }
@@ -39,7 +40,8 @@ export const makeCache = <Params, ReturnValue extends Promise<unknown>>({
 
     try {
       debug(`miss - ${key}`);
-      await redisClient.setex(key, ttl, JSON.stringify(freshValue));
+      const encodedValue = encode(Buffer.from(JSON.stringify(freshValue)));
+      await redisClient.setex(key, ttl, encodedValue);
     } catch (err) {
       console.error(`Error saving value to cache ${err.message}`);
     }
