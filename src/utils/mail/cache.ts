@@ -1,4 +1,4 @@
-import { makeCache, makeInvalidateCache } from 'utils/cache';
+import { makeCache } from 'utils/cache';
 import { getEmail } from './api';
 import { getEmailPreview } from './preview';
 
@@ -7,40 +7,27 @@ interface GetEmailParams {
   emailId: string;
 }
 
-const generateEmailKey = ({ userId, emailId }: GetEmailParams) =>
-  `user:${userId}:messages:${emailId}`;
+type GetEmailReturn = Awaited<ReturnType<typeof getEmail>>;
 
-export const getEmailCached = makeCache<
-  GetEmailParams,
-  ReturnType<typeof getEmail>
->({
-  generateKey: generateEmailKey,
-  fetchFreshValue: ({ emailId }) => getEmail(emailId),
-  ttl: 60 * 60 * 24, // One day in seconds,
-});
-
-export const invalidateEmailCache = makeInvalidateCache<GetEmailParams>({
-  generateKey: generateEmailKey,
-});
+export const { get: getEmailCached, invalidate: invalidateEmailCache } =
+  makeCache<GetEmailParams, GetEmailReturn>({
+    getFreshValue: ({ emailId }) => getEmail(emailId),
+    generateKey: ({ userId, emailId }) => `user:${userId}:messages:${emailId}`,
+    ttl: 60 * 60 * 24, // One day in seconds,
+  });
 
 interface GetEmailPreviewParams {
   userId: string;
   emailId: string;
 }
 
-const generateEmailPreviewKey = ({ userId, emailId }: GetEmailPreviewParams) =>
-  `user:${userId}:previews:${emailId}`;
+type GetEmailPreviewReturn = Awaited<ReturnType<typeof getEmailPreview>>;
 
-export const getEmailPreviewCached = makeCache<
-  GetEmailPreviewParams,
-  ReturnType<typeof getEmailPreview>
->({
-  generateKey: generateEmailPreviewKey,
-  fetchFreshValue: ({ emailId }) => getEmailPreview(emailId),
+export const {
+  get: getEmailPreviewCached,
+  invalidate: invalidateEmailPreviewCache,
+} = makeCache<GetEmailPreviewParams, GetEmailPreviewReturn>({
+  getFreshValue: ({ emailId }) => getEmailPreview(emailId),
+  generateKey: ({ userId, emailId }) => `user:${userId}:previews:${emailId}`,
   ttl: 60 * 60 * 24, // One day in seconds,
 });
-
-export const invalidateEmailPreviewCache =
-  makeInvalidateCache<GetEmailPreviewParams>({
-    generateKey: generateEmailPreviewKey,
-  });

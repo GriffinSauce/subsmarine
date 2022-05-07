@@ -5,18 +5,41 @@ import { encode, decode } from 'lz4';
 const debug = Debug('subsmarine:cache');
 
 interface CacheOptions<Params, ReturnValue> {
+  /**
+   * The async function that should be wrapped
+   */
+  getFreshValue: (params: Params) => Promise<ReturnValue>;
+  /**
+   * Create a unique key from the parameters of `get` or `invalidate`
+   */
   generateKey: (params: Params) => string;
-  fetchFreshValue: (params: Params) => ReturnValue;
+  /**
+   * Time to life in seconds
+   */
   ttl: number;
 }
 
-export const makeCache = <Params, ReturnValue extends Promise<unknown>>({
+interface Cache<Params, ReturnValue> {
+  /**
+   * Try to get a cached value, if it doesn't exist fetch a fresh value and store it (with TTL)
+   * Cached values are compressed with lz4 to save storage space and download time
+   */
+  get: (params: Params) => Promise<ReturnValue>;
+  /**
+   * Invalidate the cache entry for a particular set of params
+   */
+  invalidate: (params: Params) => Promise<number>;
+}
+
+/**
+ * Wrap an async function with a Redis cache
+ */
+export const makeCache = <Params, ReturnValue>({
   generateKey,
-  fetchFreshValue,
+  getFreshValue: fetchFreshValue,
   ttl,
-}: CacheOptions<Params, ReturnValue>) => {
-  // @ts-expect-error - ReturnValue is not a valid return?
-  return async (params: Params): ReturnValue => {
+}: CacheOptions<Params, ReturnValue>): Cache<Params, ReturnValue> => ({
+  get: async (params) => {
     const key = generateKey(params);
 
     let cachedValue: Buffer | null;
@@ -47,14 +70,8 @@ export const makeCache = <Params, ReturnValue extends Promise<unknown>>({
     }
 
     return freshValue;
-  };
-};
+  },
+  invalidate: (params) => redisClient.del(generateKey(params)),
+});
 
-interface InvalidateCacheOptions<Params> {
-  generateKey: (params: Params) => string;
-}
-
-export const makeInvalidateCache =
-  <Params>({ generateKey }: InvalidateCacheOptions<Params>) =>
-  (params: Params): Promise<unknown> =>
-    redisClient.del(generateKey(params));
+export default makeCache;
