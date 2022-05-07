@@ -4,10 +4,9 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import Debug from 'debug';
 import redisClient from 'utils/redisClient';
 import {
-  ExpandedEmailPreview,
   getEmails,
-  getExpandedEmailPreview,
-  getEmailCached,
+  getEmailPreviewCached,
+  ExpandedEmailPreview,
 } from 'utils/mail';
 
 const debug = Debug('subsmarine:api:inbox:messages');
@@ -51,17 +50,16 @@ export default async (
     return;
   }
 
-  const messagePreviews = await getEmails(inboxId);
-  const messagePreviewsSorted = orderBy(messagePreviews, 'createdAt', 'desc');
+  const emailsList = await getEmails(inboxId);
+  const emailsListSorted = orderBy(emailsList, 'createdAt', 'desc');
 
   const messages = await Promise.all(
-    messagePreviewsSorted.map(async (messagePreview) => {
-      const email = await getEmailCached({
+    emailsListSorted.map(({ id }) =>
+      getEmailPreviewCached({
         userId,
-        emailId: messagePreview.id,
-      });
-      return getExpandedEmailPreview(email);
-    }),
+        emailId: id,
+      }),
+    ),
   );
 
   res.json({ messages });
