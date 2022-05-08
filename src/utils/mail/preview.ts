@@ -2,7 +2,7 @@ import { Email } from 'mailslurp-client';
 import { pick } from 'lodash-es';
 import { getEmail } from './api';
 
-const expandedEmailPreviewKeys = <const>[
+const previewKeys = <const>[
   'id',
   'userId',
   'inboxId',
@@ -16,17 +16,28 @@ const expandedEmailPreviewKeys = <const>[
   'read',
 ];
 
-export type ExpandedEmailPreview = Pick<
-  Email,
-  typeof expandedEmailPreviewKeys[number]
->;
+// Some headers are quite long (eg. DKIM-Signature) so only pick useful ones
+const headerKeys = [
+  'Subject',
+  'Date',
+  'From',
+  'To',
+  'Reply-To',
+  'List-Unsubscribe',
+  'Content-Type',
+];
+
+export type ExpandedEmailPreview = Pick<Email, typeof previewKeys[number]>;
 
 /**
  * Picks some expanded data for rich previews
  */
 const pickExpandedEmailKeys = async (
   email: Email,
-): Promise<ExpandedEmailPreview> => pick(email, expandedEmailPreviewKeys);
+): Promise<ExpandedEmailPreview> => ({
+  ...pick(email, previewKeys),
+  headers: pick(email.headers, headerKeys),
+});
 
 /**
  * The preview in the inbox is too limited, create an expanded preview
