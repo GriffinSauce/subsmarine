@@ -1,7 +1,7 @@
 import Skeleton from 'react-loading-skeleton';
 
 const MessageListItemSkeleton: React.FC = () => (
-  <div className="focus:outline-none grid gap-1 rounded text-left leading-none ring-blue-200 ring-offset-4 focus:ring">
+  <div className="grid gap-1 rounded text-left leading-none ring-blue-200 ring-offset-4 focus:outline-none focus:ring">
     <div className="flex flex-row items-center space-x-2">
       <span className="inline-block rounded font-bold text-blue-500">
         <Skeleton width={100} />
