@@ -11,7 +11,7 @@ import Loader from 'components/Loader';
 
 const Page: NextPage = () => {
   // TODO: error handling
-  const { user, error, isLoading } = useUser();
+  const { user, isLoading } = useUser();
   const router = useRouter();
 
   useEffect(() => {
